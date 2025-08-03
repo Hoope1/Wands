@@ -5,6 +5,7 @@ Die einzige Vorgabe: **Python** als Implementationssprache.
 grundstueck_77x50_eingang_4x10.png ist im Hauptverzeichnis, so sieht das Grundstück aus, beim Beginn!
 
 ---
+Vor diesen punkten immer README-SPEC.md lesen!
 
 ## 1) Ziel & Problemkurzbeschreibung
 
