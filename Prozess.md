@@ -3,6 +3,30 @@
 ## Einleitung
 Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster eine optimale Raumverteilung berechnet, bei der die Raumfläche maximiert wird und alle formalen Bedingungen wie Gangbreite ≥4, Konnektivität, Türen und fester Eingang erfüllt sind (Quelle: README.md#10-20).
 
+## Ablauf in 10 Schritten
+1. **Aufgabe verstehen** – Issue lesen und Ziele klären.
+2. **Arbeitsbaum prüfen** – `git status` ausführen, bei Bedarf aktualisieren oder aufräumen.
+3. **Anweisungsscan** – alle Dateien mit `readme` oder `agent` im Namen durchsuchen; spezifischere Verzeichnisse überschreiben allgemeinere Vorgaben.
+4. **Prozess.md pflegen** – Aufgabenliste, Status-Tabelle und Change‑Log aktualisieren; Parameterreferenzen ergänzen.
+5. **Änderungen planen** – betroffene Dateien und Tests festlegen.
+6. **Implementieren oder dokumentieren** – Änderungen idempotent und minimal durchführen.
+7. **Linting** – `ruff .` ausführen; bei Ausfall `flake8` nutzen.
+8. **Tests** – `pytest` laufen lassen und Fehler beheben.
+9. **Commit** – nur bei sauberem Test/Lint-Status, Commit‑Message im Imperativ auf Deutsch.
+10. **Review & PR** – `git status` kontrollieren, Pull‑Request erstellen und Prozess beenden.
+
+### Einbeziehung zusätzlicher Vorgaben
+- Anweisungen aus `README*`‑ und `AGENT*`‑Dateien gelten für den jeweiligen Verzeichnisbaum.
+- Tiefer liegende Dateien haben Vorrang vor übergeordneten.
+- Benutzer‑ und Systemvorgaben haben höhere Priorität als AGENTS/README.
+
+## Idempotenz-Regeln
+- Schritte nur ausführen, wenn Änderungen nötig sind.
+- Vor dem Schreiben prüfen, ob Inhalt bereits existiert; doppelte Einträge vermeiden.
+- Chronologische Listen (Fortschritt, Change‑Log, Aufgaben) nur ergänzen, niemals bearbeiten oder löschen.
+- Werkzeuge mit festen Parametern ausführen (z. B. definierter Zufallsseed).
+- Wiederholtes Ausführen des Prozesses führt zu identischen Ergebnissen und unverändertem Git‑Status.
+
 ## Komplette Lösungsstrategie
 1. **Exakter Optimierungsansatz**: Formuliere das Problem als ganzzahliges Modell und löse es mit OR‑Tools CP‑SAT; Räume werden als platzierbare Rechtecke, der Gang als Komplement modelliert (Quelle: README-SPEC.md#5-8).
 2. **Variablen**: Für jede Rauminstanz werden Integer-Variablen für linke untere Koordinate `(x,y)` sowie Breite `w` und Höhe `h` definiert; boolesche Variablen steuern relative Lagen (Quelle: README-SPEC.md#9).
@@ -57,7 +81,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 ## Status
 | Aufgabe                                     | Status | Letzte Änderung        | Verantwortlich |
 |---------------------------------------------|:------:|------------------------|----------------|
-| Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T21:25:34Z   | Agent          |
+| Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
 | Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
@@ -66,4 +90,5 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
 - 2025-08-03T21:40:00Z – CP-SAT-Variablen und Randbedingungen implementiert
+- 2025-08-03T22:05:52Z – Zehn-Schritte-Ablauf und Idempotenzregeln ergänzt
 - 2025-08-04T00:00:00Z – Prozessstarter-Skript hinzugefügt
