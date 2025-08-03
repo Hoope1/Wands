@@ -16,8 +16,8 @@ class Door:
 
 
 @dataclass
-class Room:
-    """Placed room with doors."""
+class RoomPlacement:
+    """A concrete placement of a room in the grid."""
 
     id: str
     type: str
@@ -53,3 +53,27 @@ class RoomDef:
     priority: int
     efficiency_factor: float
     duplicate_id: Optional[str] = None
+
+
+@dataclass
+class SolveParams:
+    """Solver parameters and fixed problem constants."""
+
+    grid_w: int = 77
+    grid_h: int = 50
+    entrance_x: int = 56
+    entrance_w: int = 4
+    entrance_y: int = 40
+    entrance_h: int = 10
+    corridor_win: int = 4
+    max_iters: int = 1000
+    log_every: int = 100
+
+    def entrance_bounds(self) -> tuple[int, int, int, int]:
+        """Return entrance bounds as ``(x1, x2, y1, y2)``."""
+
+        x1 = self.entrance_x
+        x2 = self.entrance_x + self.entrance_w
+        y1 = self.entrance_y
+        y2 = self.entrance_y + self.entrance_h
+        return x1, x2, y1, y2

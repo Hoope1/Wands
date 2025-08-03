@@ -64,10 +64,12 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 18. Validierung aller Muss-Kriterien implementieren (Quelle: README.md#15-20; README-SPEC.md#57-77) – ✔ erledigt
 19. Tests für Geometrie und Validierung erweitern (Quelle: AGENTS.md#17; README.md#475-479) – ✖ offen
 20. Prozessstarter-Skript `start_process.py` mit Standardpfaden bereitstellen – ✔ erledigt
+21. Datenmodelle `RoomPlacement` und `SolveParams` ergänzen (Quelle: Benutzeranweisung) – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
 - Eingang `x1=56`, `x2=60`, `y1=40`, `y2=50` (Quelle: README.md#41-45)
+- Korridorfenster `corridor_win=4` (Quelle: Benutzeranweisung)
 - CLI: `--log-level {DEBUG,INFO,WARN,ERROR}` (Quelle: README.md#411)
 - CLI: `--log-format {text,json}` (Quelle: README.md#412)
 - CLI: `--log-file <pfad>` (Quelle: README.md#413)
@@ -86,9 +88,11 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
+| Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
 - 2025-08-03T21:40:00Z – CP-SAT-Variablen und Randbedingungen implementiert
 - 2025-08-03T22:05:52Z – Zehn-Schritte-Ablauf und Idempotenzregeln ergänzt
 - 2025-08-04T00:00:00Z – Prozessstarter-Skript hinzugefügt
+- 2025-08-04T01:00:00Z – Datenmodelle für RoomPlacement und SolveParams ergänzt
