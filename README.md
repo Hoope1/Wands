@@ -399,7 +399,72 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * ✅ Validator meldet: *alle Muss-Kriterien erfüllt*.
 * ✅ Zielwert (Raumfläche) maximiert bei gegebener Konfiguration.
 
-Wenn du willst, packe ich dir das als **SPEC.md** + **JSON-Schema** (für `solution.json`) zusammen oder ergänze eine kleine **CLI** samt **Validator-Script**, das die Abnahme-Checkliste automatisch prüft.
+---
 
+## 16) Laufende Status-/Fortschrittsanzeige & Logging (Pflicht)
 
+**Ziel:** Während Einlesen → Modellaufbau → Optimierung → Validierung → Visualisierung soll die Anwendung **kontinuierlich** und **verlässlich** Auskunft geben über *was gerade passiert*, *wie weit* der Prozess ist und *wie lange es voraussichtlich noch dauert*.
 
+### 16.1 CLI-Schalter (Vorgaben)
+
+* `--log-level {DEBUG,INFO,WARN,ERROR}` (Default: `INFO`)
+* `--log-format {text,json}` (Default: `text`)
+* `--log-file <pfad>` (optional; sonst stdout)
+* `--progress {auto,off}` (Default: `auto`) – zeigt eine **fortlaufende Progress-Anzeige**
+* `--progress-interval <sek>` (Default: `1`) – Mindestabstand zwischen Status-Updates
+* `--seed <int>` (Reproduzierbarkeit), `--time-limit <sek>` (optional), `--threads <n>` (optional)
+
+### 16.2 Strukturierte Logs (Maschinen- & menschenlesbar)
+
+* **Textmodus**: prägnante Zeilen mit Zeitstempel, Phase, Kennzahlen.
+* **JSON-Lines** (bei `--log-format json`): protokolliere **Events** als einzelne JSON-Objekte (je Zeile) mit Feldern:
+
+  * `ts`, `phase` ∈ {`start`,`parse`,`build`,`solve`,`incumbent`,`bound`,`gap`,`validate`,`render`,`finish`},
+  * `vars`,`constraints`,`nonzeros` (falls verfügbar),
+  * `objective_best`,`objective_bound`,`gap` (in %),
+  * `runtime_sec`,`eta_sec` (linear/EWMA-Schätzung),
+  * `mem_mb`,`threads`, `seed`,
+  * ggf. `room_count`,`corridor_area`,`violations` (Liste).
+* **Heartbeat**: mindestens alle `--progress-interval` Sekunden ein Fortschritts-Event – auch wenn kein neuer Bestwert kam.
+
+### 16.3 Fortschrittsanzeige (Terminal)
+
+* Eine **dynamische** Zeile (oder `tqdm`-Balken), die u. a. zeigt:
+
+  * **Phase** (Build/Solve/Validate/Render),
+  * **Laufzeit** (gesamt & Phase), **ETA**, **aktuelle Iteration/Node/Restart** (falls verfügbar),
+  * **Bestes Ziel**, **aktueller Bound**, **GAP**,
+  * **Inkrementelle Verbesserungen** (z. B. „+240 Zellen in 12 s“),
+  * **Fehlversuche/Infeasible-Cuts** (kumulativ).
+* Bei Mehrzeilen-Output (verbose) zusätzlich **Top-5 Constraint-Kategorien** nach Violation-Counts.
+
+### 16.4 Solver-/Algorithmus-Hooks (methodenneutral)
+
+* Stelle **Callbacks**/Listener bereit, die bei **Inkrementen** feuern (neues Incumbent, neuer Bound, Restart, Heuristik-Fund, Cut-Loop, etc.) und die **oben beschriebenen Events** auslösen.
+* Falls der gewählte Ansatz diese Hooks nicht nativ bietet, implementiere **periodisches Polling** (mind. alle `--progress-interval` Sekunden) mit robusten Kennzahlen (Nodes, explored states, incumbent, bound).
+
+### 16.5 Checkpoints & Abbruch
+
+* Unterstütze **sauberen Abbruch** (`SIGINT`): schreibe **letzte beste Lösung** + `validation_report.json` + Logabschluss.
+* Optional: `--checkpoint <sek>` speichert periodisch *aktuelle beste Lösung* (JSON/PNG) + Log-Snapshot.
+
+### 16.6 Validierungs- und Ergebnis-Logging
+
+* Nach dem Solve:
+
+  * **Validierungsreport** mit **jedem Muss-Kriterium** (Pass/Fail + kurze Begründung).
+  * Zusammenfassung: `room_area_total`, **Anzahl Räume** je Typ, **Gangfläche**, **Engstellen gefunden: 0** (sollte 0 sein), **Tür-zu-Eingang Pfade** (Länge/Existenz).
+* `solution.png` wird mit **Einblendung der wichtigsten Kennzahlen** beschriftet (Zielwert, GAP, Laufzeit, Seed).
+
+### 16.7 Performance-Telemetrie (optional, empfohlen)
+
+* Periodisch **RAM-Nutzung**, **Threads**, **CPU-Last** ins Log.
+* Bei sehr langen Läufen: **Phasen-Historie** (Zeitanteile) und **Verbesserungskurve** (Zeit vs. Objective) als CSV.
+
+### 16.8 Qualität & Robustheit
+
+* Logs dürfen **nie** stillschweigend abbrechen; Fehlerzustände mit **Stacktrace** und **letztem konsistenten Artefakt** (JSON/PNG) dokumentieren.
+* Fortschrittsanzeige unterdrückt **nie** die erzeugten Dateien (auch bei non-TTY).
+* Alle Zeitangaben in **Sekunden** (mit 3 Nachkommastellen), **ISO-8601** in JSON-Feldern.
+
+---
