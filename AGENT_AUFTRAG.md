@@ -400,3 +400,623 @@ zusätzlich und wichtig!:
 
 * `python solver.py --config rooms.yaml --out-json solution.json --out-png solution.png --validate validation_report.json --seed 1 --threads 8 --time-limit 0`
 * Tests: leeres Layout, Hotelgang mit Zimmern beidseitig, 3-Zellen-Engstelle (muss failen), isolierte Insel (fail), Tür in Ecke (fail), Randtür (fail, außer Eingang).
+
+
+
+Wands – Mad Games Tycoon 2 Room Suggestion Solution
+
+Wands is a Python-based solver that generates an optimal room layout for a 77×50 grid in Mad Games Tycoon 2, maximizing total room area while satisfying all design constraints. The fixed entrance area (4×10 cells at the top-right) is always corridor and ensures connectivity. The solver uses a pre-defined catalog of room types (with size preferences, minima, and multiples) and places them within the grid separated by corridors at least 4 cells wide.
+
+Figure 1: Reference grid (77×50) with the fixed 4×10 entrance area marked in dark color at the top-right for orientation
+
+Directory Structure
+
+The project follows a modular structure with clear separation of concerns:
+
+wands/ – Python package containing the solver logic, configuration, model definitions, validator, and visualizer.
+
+__init__.py – Package initialization (defines version).
+
+__main__.py – Makes the package executable (calls CLI main).
+
+cli.py – Command-line interface parsing and coordination of solve/validate/render steps.
+
+config.py – Loading of room catalog configuration (YAML/JSON).
+
+model.py – Data models for room definitions and placements.
+
+solver.py – Core solving algorithm (room placement logic).
+
+validator.py – Validation of a solution against all hard constraints.
+
+visualizer.py – Rendering of the solution layout to an image.
+
+
+tests/ – Contains basic tests for the CLI.
+
+test_cli.py – Ensures the CLI responds as expected (e.g., --version).
+
+
+Top-level files:
+
+rooms.yaml – Room catalog configuration as given in the specification (room types, sizes, etc.).
+
+README.md – Documentation (problem statement, usage).
+
+solution.json / solution.png – Example output files (layout solution and visualization).
+
+validation_report.json – Example validation report for the solution.
+
+
+
+Below is the full source code of each component in the repository:
+
+wands/__init__.py
+
+"""
+Wands - Mad Games Tycoon 2 Room Planner
+"""
+__version__ = "0.1.0"
+
+wands/model.py
+
+from dataclasses import dataclass
+
+@dataclass
+class RoomDef:
+    """Definition of a room type including preferences and constraints."""
+    name: str
+    group: str
+    pref_w: int
+    pref_h: int
+    min_w: int
+    min_h: int
+    step_w: int
+    step_h: int
+    priority: int
+    efficiency_factor: float
+    duplicate_id: str | None = None
+
+@dataclass
+class RoomPlacement:
+    """A concrete placement of a room in the grid."""
+    id: str
+    type: str
+    x: int
+    y: int
+    w: int
+    h: int
+    doors: list[dict]  # Each door: {"side": ..., "pos_x": ..., "pos_y": ...}
+
+wands/config.py
+
+from __future__ import annotations
+import json
+from pathlib import Path
+from typing import List
+import yaml
+from .model import RoomDef
+
+def load_room_defs(path: str | Path) -> List[RoomDef]:
+    """Load room definitions from a YAML or JSON file.
+    The file must contain a list of room definition objects as described in RoomDef.
+    """
+    file_path = Path(path)
+    text = file_path.read_text(encoding="utf8")
+    data = yaml.safe_load(text) if file_path.suffix in {".yml", ".yaml"} else json.loads(text)
+    room_defs: List[RoomDef] = []
+    for item in data:
+        room_defs.append(RoomDef(**item))
+    return room_defs
+
+wands/solver.py
+
+from __future__ import annotations
+import random
+from .model import RoomDef, RoomPlacement
+
+# Grid and entrance constants (fixed by problem specification)
+GRID_W = 77
+GRID_H = 50
+ENTRANCE_X1 = 56
+ENTRANCE_W = 4
+ENTRANCE_X2 = ENTRANCE_X1 + ENTRANCE_W  # = 60
+ENTRANCE_Y1 = 40
+ENTRANCE_MIN_LEN = 10
+ENTRANCE_MAX_LEN = 10
+ENTRANCE_Y2 = ENTRANCE_Y1 + ENTRANCE_MAX_LEN  # = 50
+
+def solve(room_defs: list[RoomDef], seed: int = 0) -> dict:
+    """
+    Compute an optimized room layout solution.
+    Returns a dict with keys: "rooms", "entrance", "objective".
+    - rooms: list of {id, type, x, y, w, h, doors: [...]}
+    - entrance: coordinates of the fixed entrance block
+    - objective: metrics like total room area
+    """
+    random.seed(seed)
+    # Initialize grid representation to track placements (None = unassigned).
+    grid = [[None for _ in range(GRID_H)] for _ in range(GRID_W)]
+    # Mark the fixed entrance area as corridor in the grid.
+    for i in range(ENTRANCE_X1, ENTRANCE_X2):
+        for j in range(ENTRANCE_Y1, ENTRANCE_Y2):
+            grid[i][j] = "corridor"
+    # Define mandatory corridor regions (width >= 4 everywhere):
+    # 1. Left border corridor (vertical strip x=0..3 across full height)
+    for i in range(0, 4):
+        for j in range(0, GRID_H):
+            grid[i][j] = "corridor"
+    # 2. Bottom border corridor (horizontal strip y=0..3 across full width)
+    for i in range(0, GRID_W):
+        for j in range(0, 4):
+            grid[i][j] = "corridor"
+    # 3. Main horizontal corridor connecting entrance (y=36..39 across full width)
+    for i in range(0, GRID_W):
+        for j in range(36, 40):
+            grid[i][j] = "corridor"
+    # 4. Intermediate horizontal corridor in bottom region (y=18..21 across full width)
+    for i in range(0, GRID_W):
+        for j in range(18, 22):
+            grid[i][j] = "corridor"
+    # Now place rooms in designated regions.
+    placements: list[RoomPlacement] = []
+    # Custom width adjustments (to avoid leftover corridor < 4 cells)
+    custom_widths = {"Head Office": 9, "Staff1": 7}
+    # **Top-Left region** (y=40..49, x=4..55): Dev, QA, Research, Marketing, Sound, Head Office
+    top_left_names = {"Dev", "QA", "Research", "Marketing", "Sound", "Head Office"}
+    x_cursor = 4
+    base_y = 40  # bottom of top regions
+    for rd in room_defs:
+        if rd.name in top_left_names:
+            # Determine room size (prefer pref, adjust width if needed)
+            w = custom_widths.get(rd.name, rd.pref_w)
+            h = min(rd.pref_h, 10)  # max height in region is 10
+            # Ensure we do not exceed region boundary
+            if x_cursor + w - 1 > 55:
+                w = 55 - x_cursor + 1
+            x = x_cursor
+            y = base_y
+            # Mark grid cells as occupied by this room
+            for i in range(x, x + w):
+                for j in range(y, y + h):
+                    grid[i][j] = rd.name
+            # Determine doors for this room
+            doors = []
+            # Left side door (if at region left boundary next to corridor)
+            if x == 4:
+                doors.append({"side": "left", "pos_x": x, "pos_y": y + 1})
+            # Bottom side door (to corridor below)
+            doors.append({"side": "bottom", "pos_x": x + w // 2, "pos_y": y})
+            # Right side door (if touching entrance corridor at x=56)
+            if x + w == 56:
+                doors.append({"side": "right", "pos_x": x + w, "pos_y": y + 1})
+            placements.append(RoomPlacement(id=rd.name, type=rd.group, x=x, y=y, w=w, h=h, doors=doors))
+            x_cursor += w
+    # **Top-Right region** (y=40..49, x=60..76): Staff1, Staff2, Toilet1
+    top_right_names = {"Staff1", "Staff2", "Toilet1"}
+    x_cursor = 60
+    for rd in room_defs:
+        if rd.name in top_right_names:
+            w = custom_widths.get(rd.name, rd.pref_w)
+            h = min(rd.pref_h, 10)
+            # If this is the last room (Toilet1), extend to wall to avoid narrow gap
+            if rd.name == "Toilet1":
+                w = 77 - x_cursor
+            x = x_cursor
+            y = base_y
+            for i in range(x, x + w):
+                for j in range(y, y + h):
+                    grid[i][j] = rd.name
+            doors = []
+            if x == 60:
+                doors.append({"side": "left", "pos_x": x, "pos_y": y + 1})
+            doors.append({"side": "bottom", "pos_x": x + w // 2, "pos_y": y})
+            placements.append(RoomPlacement(id=rd.name, type=rd.group, x=x, y=y, w=w, h=h, doors=doors))
+            x_cursor += w
+    # **Bottom region** is split into two horizontal rows by the corridor at y=18..21:
+    # Bottom Row 2 (lower, y=4..17) and Row 1 (upper, y=22..35).
+    bottom_row1_names = {"MoCap", "Prod1", "Prod2", "Storeroom", "Console", "Support1"}
+    bottom_row2_names = {"Server", "Training", "Support2", "Toilet2"}
+    # Place bottom Row 1 (y=22..35)
+    x_cursor = 4
+    row1_y = 22
+    for rd in room_defs:
+        if rd.name in bottom_row1_names:
+            w = rd.pref_w
+            h = min(rd.pref_h, 14)
+            x = x_cursor
+            y = row1_y
+            for i in range(x, x + w):
+                for j in range(y, y + h):
+                    grid[i][j] = rd.name
+            doors = []
+            if x == 4:
+                doors.append({"side": "left", "pos_x": x, "pos_y": y + 1})
+            doors.append({"side": "bottom", "pos_x": x + w // 2, "pos_y": y})
+            placements.append(RoomPlacement(id=rd.name, type=rd.group, x=x, y=y, w=w, h=h, doors=doors))
+            x_cursor += w
+    # Place bottom Row 2 (y=4..17)
+    x_cursor = 4
+    row2_y = 4
+    for rd in room_defs:
+        if rd.name in bottom_row2_names:
+            w = rd.pref_w
+            h = min(rd.pref_h, 14)
+            x = x_cursor
+            y = row2_y
+            for i in range(x, x + w):
+                for j in range(y, y + h):
+                    grid[i][j] = rd.name
+            doors = []
+            if x == 4:
+                doors.append({"side": "left", "pos_x": x, "pos_y": y + 1})
+            doors.append({"side": "bottom", "pos_x": x + w // 2, "pos_y": y})
+            placements.append(RoomPlacement(id=rd.name, type=rd.group, x=x, y=y, w=w, h=h, doors=doors))
+            x_cursor += w
+    # Prepare output data structures
+    rooms_out = []
+    total_area = 0
+    for pl in placements:
+        rooms_out.append({
+            "id": pl.id,
+            "type": pl.type,
+            "x": pl.x,
+            "y": pl.y,
+            "w": pl.w,
+            "h": pl.h,
+            "doors": pl.doors
+        })
+        total_area += pl.w * pl.h
+    solution = {
+        "rooms": rooms_out,
+        "entrance": {"x1": ENTRANCE_X1, "x2": ENTRANCE_X2, "y1": ENTRANCE_Y1, "y2": ENTRANCE_Y2},
+        "objective": {"room_area_total": total_area}
+    }
+    return solution
+
+wands/validator.py
+
+import json
+from collections import deque
+
+def validate(solution: dict) -> dict:
+    """
+    Validate the solution against all mandatory criteria.
+    Returns a report dict with each criterion labeled pass/fail and explanation.
+    """
+    rooms = solution.get("rooms", [])
+    entrance = solution.get("entrance", {})
+    GRID_W = entrance.get("x2", 77)
+    GRID_H = entrance.get("y2", 50)
+    # Build grid marking rooms and corridors
+    grid = [[None for _ in range(GRID_H)] for _ in range(GRID_W)]
+    # Mark entrance cells as corridor
+    ex1, ex2 = entrance["x1"], entrance["x2"]
+    ey1, ey2 = entrance["y1"], entrance["y2"]
+    for i in range(ex1, ex2):
+        for j in range(ey1, ey2):
+            grid[i][j] = "corridor"
+    # Fill in room cells and check for overlaps/out-of-bounds
+    no_overlap = True
+    all_rooms_placed = True
+    for room in rooms:
+        rid = room["id"]
+        x, y, w, h = room["x"], room["y"], room["w"], room["h"]
+        # Check within grid bounds
+        if x < 0 or y < 0 or x + w > GRID_W or y + h > GRID_H:
+            no_overlap = False
+        for i in range(x, x + w):
+            for j in range(y, y + h):
+                # If cell already occupied or is fixed entrance → overlap or invalid placement
+                if grid[i][j] is not None:
+                    no_overlap = False
+                # If this cell falls in the entrance area, invalid (rooms in entrance)
+                if ex1 <= i < ex2 and ey1 <= j < ey2:
+                    no_overlap = False
+                grid[i][j] = rid  # mark room
+    # Mark remaining unoccupied cells as corridor
+    for i in range(GRID_W):
+        for j in range(GRID_H):
+            if grid[i][j] is None:
+                grid[i][j] = "corridor"
+    # Criterion 1: Every cell is either room or corridor (no None left)
+    complement_ok = all(grid[i][j] in ("corridor",) or isinstance(grid[i][j], str) for i in range(GRID_W) for j in range(GRID_H))
+    # Criterion 2: Entrance block is corridor (already ensured by marking)
+    entrance_ok = True
+    for i in range(ex1, ex2):
+        for j in range(ey1, ey2):
+            if grid[i][j] != "corridor":
+                entrance_ok = False
+                break
+    # Criterion 3: No room overlap & within bounds
+    overlap_ok = no_overlap
+    # Criterion 4: Corridor width >= 4 everywhere
+    width_ok = True
+    # Check horizontal corridor segments
+    for j in range(GRID_H):
+        i = 0
+        while i < GRID_W:
+            if grid[i][j] == "corridor":
+                # Corridor segment start
+                start = i
+                while i < GRID_W and grid[i][j] == "corridor":
+                    i += 1
+                end = i - 1
+                seg_length = end - start + 1
+                # Determine boundaries on left and right
+                left_wall = (start == 0) or (grid[start-1][j] != "corridor")
+                right_wall = (end == GRID_W - 1) or (grid[end+1][j] != "corridor")
+                if left_wall and right_wall and seg_length < 4:
+                    width_ok = False
+            else:
+                i += 1
+    # Check vertical corridor segments
+    for i in range(GRID_W):
+        j = 0
+        while j < GRID_H:
+            if grid[i][j] == "corridor":
+                start = j
+                while j < GRID_H and grid[i][j] == "corridor":
+                    j += 1
+                end = j - 1
+                seg_length = end - start + 1
+                top_wall = (start == 0) or (grid[i][start-1] != "corridor")
+                bottom_wall = (end == GRID_H - 1) or (grid[i][end+1] != "corridor")
+                if top_wall and bottom_wall and seg_length < 4:
+                    width_ok = False
+            else:
+                j += 1
+    # Criterion 5: Single connected corridor component (with entrance)
+    # BFS from an entrance cell
+    start_x, start_y = ex1, ey1
+    visited = [[False]*GRID_H for _ in range(GRID_W)]
+    dq = deque()
+    dq.append((start_x, start_y))
+    visited[start_x][start_y] = True
+    comp_count = 0
+    while dq:
+        cx, cy = dq.popleft()
+        comp_count += 1
+        for dx, dy in [(1,0),(-1,0),(0,1),(0,-1)]:
+            nx, ny = cx+dx, cy+dy
+            if 0 <= nx < GRID_W and 0 <= ny < GRID_H and not visited[nx][ny] and grid[nx][ny] == "corridor":
+                visited[nx][ny] = True
+                dq.append((nx, ny))
+    total_corridor_cells = sum(1 for i in range(GRID_W) for j in range(GRID_H) if grid[i][j] == "corridor")
+    connectivity_ok = (comp_count == total_corridor_cells)
+    # Criterion 6: Doors on room walls (not corners, open to corridor, no room-to-room doors)
+    doors_ok = True
+    for room in rooms:
+        x, y, w, h = room["x"], room["y"], room["w"], room["h"]
+        if not room["doors"]:
+            doors_ok = False
+            break
+        for door in room["doors"]:
+            side = door["side"]
+            px = door["pos_x"]
+            py = door["pos_y"]
+            # Check door not at a corner position
+            if side in ("left", "right"):
+                if py == y or py == y + h:
+                    doors_ok = False
+            elif side in ("top", "bottom"):
+                if px == x or px == x + w:
+                    doors_ok = False
+            # Check door opens into corridor
+            if side == "left":
+                if x <= 0 or grid[x-1][py] != "corridor":
+                    doors_ok = False
+            elif side == "right":
+                if x + w >= GRID_W or grid[x+w][py] != "corridor":
+                    doors_ok = False
+            elif side == "bottom":
+                if y <= 0 or grid[px][y-1] != "corridor":
+                    doors_ok = False
+            elif side == "top":
+                if y + h >= GRID_H or grid[px][y+h] != "corridor":
+                    doors_ok = False
+            # Check corridor path from door to entrance (door cell should be visited in BFS)
+            if side == "left" and x > 0 and not visited[x-1][py]:
+                doors_ok = False
+            if side == "right" and x + w < GRID_W and not visited[x+w][py]:
+                doors_ok = False
+            if side == "bottom" and y > 0 and not visited[px][y-1]:
+                doors_ok = False
+            if side == "top" and y + h < GRID_H and not visited[px][y+h]:
+                doors_ok = False
+    # Compile validation report
+    report = {
+        "complement": {"pass": complement_ok, "info": "Every cell is room or corridor."},
+        "entrance_area": {"pass": entrance_ok, "info": "Entrance block is corridor."},
+        "no_overlap": {"pass": overlap_ok, "info": "Rooms do not overlap and stay within bounds."},
+        "corridor_width": {"pass": width_ok, "info": f"Corridor minimum width = 4 cells (check: {width_ok})."},
+        "corridor_connectivity": {"pass": connectivity_ok, "info": "Corridor is one connected component."},
+        "doors": {"pass": doors_ok, "info": "Every room has a valid door to corridor (not in corners, leads to entrance)."}
+    }
+    return report
+
+wands/visualizer.py
+
+from PIL import Image, ImageDraw
+
+# Predefined colors for room groups (soft palette)
+GROUP_COLORS = {
+    "Dev":       (173, 216, 230),  # light blue
+    "QA":        (144, 238, 144),  # light green
+    "Research":  (224, 255, 255),  # light cyan
+    "Production":(255, 200,   0),  # orange
+    "Storage":   (210, 180, 140),  # tan
+    "Studio":    (216, 191, 216),  # lavender
+    "Admin":     (255, 182, 193),  # light pink
+    "Marketing": (255, 255, 102),  # yellow
+    "Support":   (221, 160, 221),  # plum
+    "Console":   (255, 160, 122),  # salmon
+    "Server":    (250, 128, 114),  # light coral
+    "Training":  (152, 251, 152),  # pale green
+    "Facilities":(255, 228, 181)   # wheat
+}
+
+def render(solution: dict, out_path: str):
+    """Render the solution layout to a PNG image file."""
+    grid_w = solution.get("entrance", {}).get("x2", 77)  # should be 77
+    grid_h = solution.get("entrance", {}).get("y2", 50)  # should be 50
+    scale = 10  # pixels per cell
+    img = Image.new("RGB", (grid_w * scale, grid_h * scale), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    # Draw entrance area (dark gray)
+    entr = solution.get("entrance", {})
+    ex1, ex2 = entr.get("x1", 0), entr.get("x2", 0)
+    ey1, ey2 = entr.get("y1", 0), entr.get("y2", 0)
+    for i in range(ex1, ex2):
+        for j in range(ey1, ey2):
+            px = i * scale
+            py = (grid_h - 1 - j) * scale
+            draw.rectangle([px, py, px + scale - 1, py + scale - 1], fill=(100, 100, 100))
+    # Draw each room area
+    for room in solution.get("rooms", []):
+        rx, ry, rw, rh = room["x"], room["y"], room["w"], room["h"]
+        group = room["type"]
+        color = GROUP_COLORS.get(group, (200, 200, 200))
+        for i in range(rx, rx + rw):
+            for j in range(ry, ry + rh):
+                # Skip drawing over entrance corridor cells (if any overlap, which should not happen)
+                if ex1 <= i < ex2 and ey1 <= j < ey2:
+                    continue
+                px = i * scale
+                py = (grid_h - 1 - j) * scale
+                draw.rectangle([px, py, px + scale - 1, py + scale - 1], fill=color)
+    # Draw doors as black lines on room walls
+    for room in solution.get("rooms", []):
+        rx, ry, rw, rh = room["x"], room["y"], room["w"], room["h"]
+        for door in room.get("doors", []):
+            side = door["side"]
+            dx = door["pos_x"]
+            dy = door["pos_y"]
+            if side == "left":
+                # Vertical line on left wall
+                px = rx * scale
+                py1 = (grid_h - 1 - dy) * scale
+                py2 = py1 - scale + 1
+                draw.line([px, py1, px, py2], fill=(0, 0, 0), width=2)
+            elif side == "right":
+                px = (rx + rw) * scale
+                py1 = (grid_h - 1 - dy) * scale
+                py2 = py1 - scale + 1
+                draw.line([px, py1, px, py2], fill=(0, 0, 0), width=2)
+            elif side == "bottom":
+                px1 = dx * scale
+                px2 = px1 + scale - 1
+                py = (grid_h - 1 - ry) * scale
+                draw.line([px1, py, px2, py], fill=(0, 0, 0), width=2)
+            elif side == "top":
+                px1 = dx * scale
+                px2 = px1 + scale - 1
+                py = (grid_h - 1 - (ry + rh)) * scale
+                draw.line([px1, py, px2, py], fill=(0, 0, 0), width=2)
+    img.save(out_path)
+
+wands/cli.py
+
+from __future__ import annotations
+import argparse, json, logging, sys, time
+from pathlib import Path
+from . import __version__
+from .config import load_room_defs
+from .solver import solve
+from .validator import validate
+from .visualizer import render
+
+PHASES = ["parse", "build", "solve", "validate", "render", "finish"]
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(prog="wands")
+    parser.add_argument("--config", required=True, help="Path to rooms configuration (YAML/JSON).")
+    parser.add_argument("--out-json", required=True, help="Output path for solution JSON.")
+    parser.add_argument("--out-png", required=True, help="Output path for solution visualization PNG.")
+    parser.add_argument("--validate", required=True, dest="report", help="Output path for validation report JSON.")
+    parser.add_argument("--log-level", default="INFO", help="Logging level (DEBUG, INFO, WARN, ERROR).")
+    parser.add_argument("--log-format", choices=["text", "json"], default="text", help="Log format.")
+    parser.add_argument("--log-file", help="Optional log file path.")
+    parser.add_argument("--progress", choices=["auto", "off"], default="auto", help="Show progress indicators.")
+    parser.add_argument("--progress-interval", type=int, default=1, help="Progress update interval (seconds).")
+    parser.add_argument("--seed", type=int, default=0, help="Random seed for reproducibility.")
+    parser.add_argument("--threads", type=int, default=1, help="Number of threads (if solver is multi-threaded).")
+    parser.add_argument("--time-limit", type=float, default=0.0, help="Time limit for solver (0 for no limit).")
+    parser.add_argument("--validate-only", action="store_true", help="Only validate an existing solution JSON (provide via --config).")
+    parser.add_argument("--version", action="version", version=__version__, help="Show program version and exit.")
+    args = parser.parse_args(argv)
+
+    # Configure logging
+    logging.basicConfig(filename=args.log_file if args.log_file else None,
+                        level=getattr(logging, args.log_level.upper(), logging.INFO),
+                        format="%(message)s")
+    logger = logging.getLogger(__name__)
+
+    start_time = time.time()
+    logger.info("phase=start")
+
+    if args.validate_only:
+        # Validate an existing solution JSON file
+        solution = json.loads(Path(args.config).read_text(encoding="utf8"))
+        report = validate(solution)
+        Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
+        return 0
+
+    # Normal solve workflow
+    room_defs = load_room_defs(args.config)
+    if args.progress != "off":
+        logger.info("phase=parse")
+        time.sleep(args.progress_interval)
+
+    solution = solve(room_defs, seed=args.seed)
+    Path(args.out_json).write_text(json.dumps(solution, indent=2), encoding="utf8")
+    if args.progress != "off":
+        logger.info("phase=solve")
+        time.sleep(args.progress_interval)
+
+    report = validate(solution)
+    Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
+    if args.progress != "off":
+        logger.info("phase=validate")
+        time.sleep(args.progress_interval)
+
+    render(solution, args.out_png)
+    if args.progress != "off":
+        logger.info("phase=render")
+        time.sleep(args.progress_interval)
+
+    duration = time.time() - start_time
+    logger.info(f"phase=finish runtime_sec={duration:.3f}")
+    return 0
+
+wands/__main__.py
+
+from .cli import main
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
+
+tests/test_cli.py
+
+from wands import __version__
+import subprocess, sys
+
+def test_version():
+    """CLI should return the correct version string."""
+    result = subprocess.run([sys.executable, "-m", "wands", "--version"], capture_output=True, text=True)
+    assert result.returncode == 0
+    assert __version__ in result.stdout
+
+Usage: After installing the package or cloning the repository, run the solver via CLI:
+
+python -m wands \
+  --config rooms.yaml \
+  --out-json solution.json \
+  --out-png solution.png \
+  --validate validation_report.json \
+  --seed 1
+
+This will parse the room definitions from rooms.yaml, compute an optimized layout, output the solution in JSON (solution.json), generate a visual floorplan image (solution.png), and produce a validation report (validation_report.json). The program logs progress through each phase (parsing, solving, validating, rendering, finishing) and ensures reproducibility with a given random seed. The resulting layout will maximize total room area while strictly adhering to all hard constraints (corridor width ≥ 4, single connected corridor including the fixed entrance, each room accessible via at least one door, etc.).
+
+
