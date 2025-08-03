@@ -34,7 +34,7 @@ Diese Vorgaben gelten für das gesamte Repository.
 - Frühere Einträge niemals entfernen.
 
 ## Offene Punkte
-- Algorithmus zur Raumverteilung fehlt.
+- Algorithmus zur Raumverteilung unvollständig (Optimierung, Nichtüberlappung usw. fehlen).
 - Validator deckt noch nicht alle Spezialfälle ab (z. B. diagonale Engstellen).
 - Logging und Fortschrittsanzeige gemäß Spezifikation ausbauen.
 - Tests für Geometrie und Validierung erweitern.
@@ -43,3 +43,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2024-06-02: Grundgerüst (CLI, Konfigurationsladen, Dummy-Solver, Visualisierung, einfache Validierung) erstellt.
 - 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
 - 2025-08-03: Prozessdokumentation, Pre-Commit-Konfiguration und Pyproject ergänzt.
+- 2025-08-03: Solver um CP-SAT-Grundgerüst und Randbedingungen erweitert.

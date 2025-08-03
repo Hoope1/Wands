@@ -1,3 +1,9 @@
+[project]
+name = "wands"
+version = "0.0.0"
+requires-python = ">=3.10"
+dependencies = ["ortools>=9.14", "pillow>=11.3"]
+
 [tool.ruff]
 line-length = 88
 extend-select = ["I"]
