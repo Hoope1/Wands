@@ -1,26 +1,37 @@
 # AGENTS Instructions
 
 ## Scope
-These instructions apply to the entire repository.
+Diese Vorgaben gelten für das gesamte Repository.
 
-## Ziel
-Setze die Anforderungen der README.md vollständig in Python-Code um. Jede Bearbeitung dieses Repositories soll diese AGENTS.md überarbeiten und verfeinern.
+## Nutzung von Prozess.md
+- Prozess.md ist die einzige verbindliche Prozess- und Wissensquelle.
+- Vor jeder Änderung alle README*/AGENTS*-Dateien prüfen und Prozess.md aktualisieren.
+- Aufgabenliste mit ✔/✖ pflegen, Status-Tabelle und Change-Log bei jeder Aktualisierung anpassen.
+- Externe Tools lesen Parameterreferenz und Aufgabenliste zur Steuerung von Linting, Tests und Deployment.
+
+## Backup-Agenten
+| Disziplin            | Primärtool | Backup-Tool | Wechselkriterium                         |
+|----------------------|-----------|-------------|-----------------------------------------|
+| Linting & Formatierung| ruff      | flake8      | wenn ruff nicht verfügbar oder fehlschlägt |
+| Importsortierung     | ruff (I)  | isort       | wenn ruff‑I nicht läuft                 |
+| Typprüfung           | pyright   | mypy        | bei Ausfall oder Fehler von pyright     |
+| Tote-Code-Analyse    | vulture   | ruff F401   | wenn vulture nicht nutzbar              |
+| Komplexitätsanalyse  | xenon     | radon       | wenn xenon nicht nutzbar                |
 
 ## Arbeitsweise
-- **README.md nicht löschen oder kürzen.** Ergänze stattdessen einen Abschnitt *Fortschritt* und trage dort alle erledigten Schritte ein.
-- **AGENTS.md bei jedem Durchgang aktualisieren.** Führe neue Erkenntnisse, offene Punkte und Verbesserungen auf.
-- **Python 3.10+** verwenden. Achte auf PEP8, Typannotationen und klare Modulstruktur.
-- Implementiere einen Algorithmus/Heuristik zur optimalen Raumverteilung gemäß README.
-- Das Programm muss `solution.json`, `solution.png` und `validation_report.json` erzeugen.
-- CLI-Schalter und Logging wie in Abschnitt 16 der README beschrieben umsetzen.
-- Eine Validierung aller Muss-Kriterien (Gangbreite, Türen, Konnektivität etc.) ist Pflicht.
+- README.md nicht löschen oder kürzen; Fortschritt dort dokumentieren.
+- AGENTS.md bei jedem Durchgang aktualisieren.
+- Python 3.10+ nutzen, PEP8, Typannotationen und klare Modulstruktur beachten.
+- Algorithmus/Heuristik zur optimalen Raumverteilung implementieren.
+- Programm erzeugt `solution.json`, `solution.png` und `validation_report.json`.
+- CLI-Schalter und Logging gemäß README Abschnitt 16 umsetzen.
+- Muss-Kriterien (Gangbreite, Türen, Konnektivität etc.) validieren.
 - Tests hinzufügen und `pytest` vor jedem Commit ausführen.
 - Commit-Messages auf Deutsch, prägnant und im Imperativ.
 
 ## Fortschrittspflege
-- Nach jedem Feature: README unter *Fortschritt* ergänzen.
+- Nach jedem Feature README unter *Fortschritt* ergänzen.
 - Frühere Einträge niemals entfernen.
-
 
 ## Offene Punkte
 - Algorithmus zur Raumverteilung fehlt.
@@ -31,3 +42,4 @@ Setze die Anforderungen der README.md vollständig in Python-Code um. Jede Bearb
 ## Aktualisierung
 - 2024-06-02: Grundgerüst (CLI, Konfigurationsladen, Dummy-Solver, Visualisierung, einfache Validierung) erstellt.
 - 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
+- 2025-08-03: Prozessdokumentation, Pre-Commit-Konfiguration und Pyproject ergänzt.

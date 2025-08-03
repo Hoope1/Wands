@@ -1,0 +1,40 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.5
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+        language_version: python3.12
+        types: [python]
+      - id: ruff
+        name: ruff-import-sort
+        args: ["--fix", "--select", "I"]
+        language_version: python3.12
+        types: [python]
+  - repo: https://github.com/RobertCraigie/pyright-pre-commit
+    rev: v1.1.359
+    hooks:
+      - id: pyright
+        language_version: python3.12
+        types: [python]
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.7.1
+    hooks:
+      - id: mypy
+        language_version: python3.12
+        types: [python]
+  - repo: https://github.com/jendrikseipp/vulture
+    rev: v2.10
+    hooks:
+      - id: vulture
+        language_version: python3.12
+        types: [python]
+  - repo: local
+    hooks:
+      - id: xenon
+        name: xenon
+        entry: xenon --max-absolute B --max-modules B --max-average A
+        language: python
+        language_version: python3.12
+        types: [python]
+        additional_dependencies: [xenon]
