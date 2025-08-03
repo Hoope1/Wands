@@ -22,9 +22,9 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 ## Schritt-für-Schritt-Aufgabenliste
 1. Projekt mit Python ≥ 3.10 initialisieren (Quelle: AGENTS.md#12) – ✔ erledigt
 2. Konfigurationsdaten aus `rooms.yaml` laden (Quelle: README-SPEC.md#34-35) – ✔ erledigt
-3. CpModel und Variablen `x,y,w,h` pro Raum definieren (Quelle: README-SPEC.md#9) – ✖ offen
-4. Eingangsbereich als stets freien Gang modellieren (Quelle: README.md#41-45; README-SPEC.md#15) – ✖ offen
-5. Rand- und Rastergrenzen (`x+w≤77`, `y+h≤50`) absichern (Quelle: README-SPEC.md#36) – ✖ offen
+3. CpModel und Variablen `x,y,w,h` pro Raum definieren (Quelle: README-SPEC.md#9) – ✔ erledigt
+4. Eingangsbereich als stets freien Gang modellieren (Quelle: README.md#41-45; README-SPEC.md#15) – ✔ erledigt
+5. Rand- und Rastergrenzen (`x+w≤77`, `y+h≤50`) absichern (Quelle: README-SPEC.md#36) – ✔ erledigt
 6. Nichtüberlappung durch Lage-Binärvariablen erzwingen (Quelle: README-SPEC.md#19) – ✖ offen
 7. Mindest‑Gangbreite ≥4 überall sicherstellen (Quelle: README.md#91-98; README-SPEC.md#21) – ✖ offen
 8. Gang-Konnektivität via Flussmodell herstellen (Quelle: README-SPEC.md#23) – ✖ offen
@@ -57,9 +57,10 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Aufgabe                                     | Status | Letzte Änderung        | Verantwortlich |
 |---------------------------------------------|:------:|------------------------|----------------|
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T21:25:34Z   | Agent          |
-| Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:25:34Z   | Agent          |
+| Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
+- 2025-08-03T21:40:00Z – CP-SAT-Variablen und Randbedingungen implementiert
