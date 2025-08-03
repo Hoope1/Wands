@@ -506,3 +506,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-03: CP-SAT-Modell mit Variablen und Randbedingungen eingeführt.
 * 2025-08-03: Kurz-Spezifikation, CLI-Beispiel und Abhängigkeiten ergänzt.
 * 2025-08-04: Prozessstarter-Skript `start_process.py` hinzugefügt.
+* 2025-08-04: Datenmodelle für RoomPlacement und SolveParams ergänzt.
