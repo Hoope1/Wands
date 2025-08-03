@@ -7,6 +7,16 @@ grundstueck_77x50_eingang_4x10.png ist im Hauptverzeichnis, so sieht das Grundst
 ---
 Vor diesen punkten immer README-SPEC.md und AGENT_AUFTRAG.md lesen!
 
+Der komplette Prozess lässt sich mit Standardpfaden über das Skript
+``start_process.py`` starten:
+
+```bash
+python start_process.py --progress off
+```
+
+Weitere unbekannte Parameter werden an die interne CLI von `wands`
+weitergereicht.
+
 ## 1) Ziel & Problemkurzbeschreibung
 
 Entwirf ein Python-Programm, das für ein rechteckiges, diskretes Grundstück (Gitternetz) eine **optimale Raumverteilung** berechnet.
@@ -478,3 +488,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2024-06-02: Grundgerüst in Python erstellt (CLI, Konfigurationsladen, Dummy-Lösung, Visualisierung, Validierung, Tests).*
 * 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
 * 2025-08-03: CP-SAT-Modell mit Variablen und Randbedingungen eingeführt.
+* 2025-08-04: Prozessstarter-Skript `start_process.py` hinzugefügt.

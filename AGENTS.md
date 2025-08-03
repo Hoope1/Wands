@@ -44,3 +44,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
 - 2025-08-03: Prozessdokumentation, Pre-Commit-Konfiguration und Pyproject ergänzt.
 - 2025-08-03: Solver um CP-SAT-Grundgerüst und Randbedingungen erweitert.
+- 2025-08-04: Prozessstarter `start_process.py` eingeführt.
