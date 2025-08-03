@@ -46,3 +46,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2025-08-03: Solver um CP-SAT-Grundgerüst und Randbedingungen erweitert.
 - 2025-08-04: Prozessstarter `start_process.py` eingeführt.
 - 2025-08-04: Datenmodelle `RoomPlacement` und `SolveParams` ergänzt.
+- 2025-08-04: Hilfsfunktionen für Rasteroperationen hinzugefügt.

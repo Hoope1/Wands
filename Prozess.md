@@ -96,3 +96,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-03T22:05:52Z – Zehn-Schritte-Ablauf und Idempotenzregeln ergänzt
 - 2025-08-04T00:00:00Z – Prozessstarter-Skript hinzugefügt
 - 2025-08-04T01:00:00Z – Datenmodelle für RoomPlacement und SolveParams ergänzt
+- 2025-08-04T02:00:00Z – Hilfsfunktionen für Rasteroperationen und Tests ergänzt
