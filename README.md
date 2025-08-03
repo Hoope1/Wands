@@ -2,7 +2,7 @@
 Mad Games Tycoon 2 Room Suggestion  **vollständige Aufgaben- & Spezifikationsbeschreibung** (auf Deutsch) (Algorithmus/Heuristik/Library frei wählbar) auskommt und alle Informationen enthält.
 Die einzige Vorgabe: **Python** als Implementationssprache.
 
-Grundstueck.png ist im Hauptverzeichnis, so sieht das Grundstück aus, beim Beginn!
+grundstueck_77x50_eingang_4x10.png ist im Hauptverzeichnis, so sieht das Grundstück aus, beim Beginn!
 
 ---
 
