@@ -21,3 +21,12 @@ Setze die Anforderungen der README.md vollständig in Python-Code um. Jede Bearb
 - Nach jedem Feature: README unter *Fortschritt* ergänzen.
 - Frühere Einträge niemals entfernen.
 
+
+## Offene Punkte
+- Algorithmus zur Raumverteilung fehlt.
+- Vollständige Validator-Regeln (Gangbreite, Türen, Konnektivität) implementieren.
+- Logging und Fortschrittsanzeige gemäß Spezifikation ausbauen.
+- Tests für Geometrie und Validierung erweitern.
+
+## Aktualisierung
+- 2024-06-02: Grundgerüst (CLI, Konfigurationsladen, Dummy-Solver, Visualisierung, einfache Validierung) erstellt.
