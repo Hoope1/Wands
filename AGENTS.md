@@ -24,9 +24,10 @@ Setze die Anforderungen der README.md vollständig in Python-Code um. Jede Bearb
 
 ## Offene Punkte
 - Algorithmus zur Raumverteilung fehlt.
-- Vollständige Validator-Regeln (Gangbreite, Türen, Konnektivität) implementieren.
+- Validator deckt noch nicht alle Spezialfälle ab (z. B. diagonale Engstellen).
 - Logging und Fortschrittsanzeige gemäß Spezifikation ausbauen.
 - Tests für Geometrie und Validierung erweitern.
 
 ## Aktualisierung
 - 2024-06-02: Grundgerüst (CLI, Konfigurationsladen, Dummy-Solver, Visualisierung, einfache Validierung) erstellt.
+- 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.

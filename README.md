@@ -475,4 +475,5 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 ## Fortschritt
 
 * 2024-06-01: AGENTS.md hinzugefügt und grundlegende Projektanweisungen dokumentiert.
-* 2024-06-02: Grundgerüst in Python erstellt (CLI, Konfigurationsladen, Dummy-Lösung, Visualisierung, Validierung, Tests).*
+* 2024-06-02: Grundgerüst in Python erstellt (CLI, Konfigurationsladen, Dummy-Lösung, Visualisierung, Validierung, Tests).* 
+* 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
