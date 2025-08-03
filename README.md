@@ -468,3 +468,9 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * Alle Zeitangaben in **Sekunden** (mit 3 Nachkommastellen), **ISO-8601** in JSON-Feldern.
 
 ---
+
+---
+
+## Fortschritt
+
+* 2024-06-01: AGENTS.md hinzugefügt und grundlegende Projektanweisungen dokumentiert.
