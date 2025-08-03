@@ -17,6 +17,22 @@ python start_process.py --progress off
 Weitere unbekannte Parameter werden an die interne CLI von `wands`
 weitergereicht.
 
+## Kurz-Spezifikation
+
+- Raster: **77×50** Zellen.
+- Eingang: Block **x=56..59**, **y=40..49** (4×10) gehört immer zum Gang.
+- Gang: Komplement aller Räume, **Breite ≥4** nach L∞ (**4×4-Fenster** vollständig Gang).
+- Konnektivität: genau **eine Gangkomponente** in **4-Nachbarschaft** inklusive Eingang.
+- Türen: liegen auf einer **Raumwand**, **nicht in Ecken**, öffnen in den Gang und sind vom Eingang aus erreichbar.
+- Räume: **rechteckig**, **wand-an-wand** erlaubt, **keine Überlappung**, vollständig im 77×50‑Grid.
+- Primäres Ziel: **Maximiere die Gesamtfläche aller Räume**.
+- Ausgaben: `solution.json`, `solution.png`, `validation_report.json`.
+- CLI-Beispiel:
+  ```bash
+  python -m wands --config rooms.yaml --out-json solution.json --out-png solution.png --validate validation_report.json --seed 1
+  ```
+- Abhängigkeiten: **Python 3.10+**, `ortools`, `Pillow`, `PyYAML`.
+
 ## 1) Ziel & Problemkurzbeschreibung
 
 Entwirf ein Python-Programm, das für ein rechteckiges, diskretes Grundstück (Gitternetz) eine **optimale Raumverteilung** berechnet.
@@ -488,4 +504,5 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2024-06-02: Grundgerüst in Python erstellt (CLI, Konfigurationsladen, Dummy-Lösung, Visualisierung, Validierung, Tests).*
 * 2024-06-03: Validator erweitert (Überschneidungen, Gangbreite, Türen, Erreichbarkeit) und Tests ergänzt.
 * 2025-08-03: CP-SAT-Modell mit Variablen und Randbedingungen eingeführt.
+* 2025-08-03: Kurz-Spezifikation, CLI-Beispiel und Abhängigkeiten ergänzt.
 * 2025-08-04: Prozessstarter-Skript `start_process.py` hinzugefügt.
