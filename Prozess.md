@@ -39,6 +39,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 17. Sauberen Abbruch und optionale Checkpoints unterstützen (Quelle: README.md#447-450; README-SPEC.md#91) – ✖ offen
 18. Validierung aller Muss-Kriterien implementieren (Quelle: README.md#15-20; README-SPEC.md#57-77) – ✔ erledigt
 19. Tests für Geometrie und Validierung erweitern (Quelle: AGENTS.md#17; README.md#475-479) – ✖ offen
+20. Prozessstarter-Skript `start_process.py` mit Standardpfaden bereitstellen – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -60,7 +61,9 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
+| Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
 - 2025-08-03T21:40:00Z – CP-SAT-Variablen und Randbedingungen implementiert
+- 2025-08-04T00:00:00Z – Prozessstarter-Skript hinzugefügt

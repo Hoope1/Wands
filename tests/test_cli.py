@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from wands import __version__
 
 
 def test_cli_creates_output(tmp_path: Path) -> None:
@@ -32,3 +36,13 @@ def test_cli_creates_output(tmp_path: Path) -> None:
     assert out_report.exists(), "validation report not created"
     data = json.loads(out_json.read_text())
     assert data["entrance"]["x1"] == 56
+
+
+def test_start_process_version() -> None:
+    result = subprocess.run(
+        [sys.executable, "start_process.py", "--version"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert __version__ in result.stdout
