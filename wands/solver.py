@@ -12,12 +12,25 @@ maximum number of cut rounds is reached.
 from __future__ import annotations
 
 from collections import deque
-from typing import List, Sequence
+from typing import Callable, List, Sequence
 
 from ortools.sat.python import cp_model
 
 from .model import RoomDef, SolveParams
+from .progress import Progress
 from .utils import iter_window_cells, neighbors4, windows_covering_cell
+
+
+class SolveInterrupted(RuntimeError):
+    """Raised when the solving process is interrupted.
+
+    Contains the best solution found so far in ``solution``.
+    """
+
+    def __init__(self, solution: dict | None):
+        """Store the best solution available when interruption occurred."""
+        super().__init__("solving interrupted")
+        self.solution = solution
 
 
 def allowed_values(min_v: int, step: int, max_v: int) -> cp_model.Domain:
@@ -278,55 +291,75 @@ def _corridor_components(
     return components
 
 
-def solve(room_defs: List[RoomDef], params: SolveParams) -> dict:
-    """Solve the room placement problem under the given ``params``."""
+def solve(
+    room_defs: List[RoomDef],
+    params: SolveParams,
+    progress: Progress | None = None,
+    checkpoint_cb: Callable[[dict], None] | None = None,
+) -> dict:
+    """Solve the room placement problem under the given ``params``.
+
+    ``progress`` is used to emit heartbeat events after each iteration.
+    ``checkpoint_cb`` is invoked with the latest solution to allow
+    periodic persistence.
+    """
     door_cuts: list[list[tuple[int, int]]] = []
     island_cuts: list[list[tuple[int, int]]] = []
 
     max_rounds = getattr(params, "max_cut_rounds", getattr(params, "max_iters", 10))
 
     last_solution = None
-    for _ in range(max_rounds):
-        model, room_vars, room_cell, corr_cell = _build_model(
-            room_defs, params, door_cuts, island_cuts
-        )
-        solver = cp_model.CpSolver()
-        solver.parameters.max_time_in_seconds = getattr(params, "time_limit", 1.0)
-        status = solver.solve(model)
-        if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
-            return {
-                "rooms": [],
+    try:
+        for _ in range(max_rounds):
+            model, room_vars, room_cell, corr_cell = _build_model(
+                room_defs, params, door_cuts, island_cuts
+            )
+            solver = cp_model.CpSolver()
+            solver.parameters.max_time_in_seconds = getattr(
+                params, "time_limit", 1.0
+            )
+            status = solver.solve(model)
+            if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+                return {
+                    "rooms": [],
+                    "entrance": {
+                        "x1": params.entrance_x,
+                        "x2": params.entrance_x + params.entrance_w,
+                        "y1": params.entrance_y,
+                        "y2": params.entrance_y + params.entrance_h,
+                    },
+                    "objective": {"room_area_total": 0},
+                }
+
+            rooms, room_grid, corr_grid, area_total = _extract_solution(
+                solver, room_vars, room_cell, corr_cell
+            )
+
+            last_solution = {
+                "rooms": rooms,
                 "entrance": {
                     "x1": params.entrance_x,
                     "x2": params.entrance_x + params.entrance_w,
                     "y1": params.entrance_y,
                     "y2": params.entrance_y + params.entrance_h,
                 },
-                "objective": {"room_area_total": 0},
+                "objective": {"room_area_total": area_total},
             }
+            if progress:
+                progress.heartbeat("solve", objective_best=area_total)
+            if checkpoint_cb:
+                checkpoint_cb(last_solution)
 
-        rooms, room_grid, corr_grid, area_total = _extract_solution(
-            solver, room_vars, room_cell, corr_cell
-        )
+            doors_ok, new_door_cuts = _ensure_doors(rooms, corr_grid)
+            components = _corridor_components(corr_grid, params)
+            if doors_ok and not components:
+                return last_solution
+            door_cuts.extend(new_door_cuts)
+            if components:
+                island_cuts.append(components[0])
+    except KeyboardInterrupt:
+        raise SolveInterrupted(last_solution)
 
-        last_solution = {
-            "rooms": rooms,
-            "entrance": {
-                "x1": params.entrance_x,
-                "x2": params.entrance_x + params.entrance_w,
-                "y1": params.entrance_y,
-                "y2": params.entrance_y + params.entrance_h,
-            },
-            "objective": {"room_area_total": area_total},
-        }
-
-        doors_ok, new_door_cuts = _ensure_doors(rooms, corr_grid)
-        components = _corridor_components(corr_grid, params)
-        if doors_ok and not components:
-            return last_solution
-        door_cuts.extend(new_door_cuts)
-        if components:
-            island_cuts.append(components[0])
     if last_solution is None:
         raise RuntimeError("CP-SAT solver failed to find a solution")
     return last_solution

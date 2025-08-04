@@ -59,10 +59,10 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 13. `solution.png` rendern (Quelle: README-SPEC.md#55) – ✔ erledigt
 14. `validation_report.json` schreiben (Quelle: README-SPEC.md#57-81) – ✔ erledigt
 15. CLI‑Schalter implementieren (`--log-level`, `--log-format`, `--log-file`, `--progress`, `--progress-interval`, `--seed`, `--time-limit`, `--threads`) (Quelle: README.md#409-416) – ✔ erledigt
-16. Strukturierte Logs und Progress-Anzeige entwickeln (Quelle: README.md#418-439; README-SPEC.md#83-91) – ✖ offen
-17. Sauberen Abbruch und optionale Checkpoints unterstützen (Quelle: README.md#447-450; README-SPEC.md#91) – ✖ offen
+16. Strukturierte Logs und Progress-Anzeige entwickeln (Quelle: README.md#418-439; README-SPEC.md#83-91) – ✔ erledigt
+17. Sauberen Abbruch und optionale Checkpoints unterstützen (Quelle: README.md#447-450; README-SPEC.md#91) – ✔ erledigt
 18. Validierung aller Muss-Kriterien implementieren (Quelle: README.md#15-20; README-SPEC.md#57-77) – ✔ erledigt
-19. Tests für Geometrie und Validierung erweitern (Quelle: AGENTS.md#17; README.md#475-479) – ✖ offen
+19. Tests für Geometrie und Validierung erweitern (Quelle: AGENTS.md#17; README.md#475-479) – ✔ erledigt
 20. Prozessstarter-Skript `start_process.py` mit Standardpfaden bereitstellen – ✔ erledigt
 21. Datenmodelle `RoomPlacement` und `SolveParams` ergänzen (Quelle: Benutzeranweisung) – ✔ erledigt
 22. Fortschrittsmodul für Heartbeat implementieren (Quelle: Benutzeranweisung) – ✔ erledigt
@@ -85,14 +85,15 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - CLI: `--checkpoint <sek>` (Quelle: README.md#447-450)
 - CLI: `--validate-only` (Quelle: Benutzeranweisung)
 - Ausgaben: `solution.json`, `solution.png`, `validation_report.json` (Quelle: AGENTS.md#14)
+ - CLI: `--log-level`, `--log-format`, `--log-file` (Quelle: README.md#409-416)
 
 ## Status
 | Aufgabe                                     | Status | Letzte Änderung        | Verantwortlich |
 |---------------------------------------------|:------:|------------------------|----------------|
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
 | Algorithmus zur Raumverteilung implementieren| ✔     | 2025-08-05T00:00:00Z   | Agent          |
-| Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-04T03:00:00Z   | Agent          |
-| Tests erweitern                             | ✖     | 2025-08-06T02:00:00Z   | Agent          |
+| Logging & Fortschrittsanzeige ausbauen      | ✔     | 2025-08-07T00:00:00Z   | Agent          |
+| Tests erweitern                             | ✔     | 2025-08-07T00:00:00Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 | Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
@@ -112,3 +113,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-06T00:00:00Z – CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert
 - 2025-08-06T01:00:00Z – `rooms.yaml` auf Einzeilenformat gebracht und Lösungsschema ergänzt
 - 2025-08-06T02:00:00Z – CLI-Tests für Versionsausgabe und Minimalablauf hinzugefügt
+- 2025-08-07T00:00:00Z – Logging, Progress, Checkpoint-Unterstützung und zusätzliche Validierungs-Tests ergänzt
