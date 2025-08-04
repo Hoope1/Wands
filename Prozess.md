@@ -87,7 +87,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
 | Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-04T03:00:00Z   | Agent          |
-| Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
+| Tests erweitern                             | ✖     | 2025-08-04T00:24:03Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 | Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
@@ -101,3 +101,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T02:00:00Z – Hilfsfunktionen für Rasteroperationen und Tests ergänzt
 - 2025-08-04T03:00:00Z – Fortschrittsmodul mit Heartbeat und Abschluss implementiert
 - 2025-08-04T00:12:49Z – Visualisierung mit Raster, Farben und Türen ergänzt
+- 2025-08-04T00:24:03Z – Validator um 4×4-Gangprüfung und Türvalidierung erweitert
