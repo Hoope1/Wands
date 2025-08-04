@@ -1,11 +1,11 @@
-from __future__ import annotations
-
 """Convenience script to run the full Wands process.
 
 This wrapper supplies default paths so the solver, validator and renderer
 can be executed with a single command. Additional arguments are forwarded
 to the underlying :mod:`wands.cli` interface.
 """
+
+from __future__ import annotations
 
 import argparse
 import sys

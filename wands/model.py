@@ -71,7 +71,6 @@ class SolveParams:
 
     def entrance_bounds(self) -> tuple[int, int, int, int]:
         """Return entrance bounds as ``(x1, x2, y1, y2)``."""
-
         x1 = self.entrance_x
         x2 = self.entrance_x + self.entrance_w
         y1 = self.entrance_y
