@@ -92,7 +92,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
 | Algorithmus zur Raumverteilung implementieren| ✔     | 2025-08-05T00:00:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-04T03:00:00Z   | Agent          |
-| Tests erweitern                             | ✖     | 2025-08-04T00:24:03Z   | Agent          |
+| Tests erweitern                             | ✖     | 2025-08-06T02:00:00Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 | Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
@@ -111,3 +111,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-05T00:00:00Z – CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert
 - 2025-08-06T00:00:00Z – CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert
 - 2025-08-06T01:00:00Z – `rooms.yaml` auf Einzeilenformat gebracht und Lösungsschema ergänzt
+- 2025-08-06T02:00:00Z – CLI-Tests für Versionsausgabe und Minimalablauf hinzugefügt

@@ -11,15 +11,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from wands import __version__
 
 
-def test_cli_creates_output(tmp_path: Path) -> None:
-    """CLI should produce solution, PNG and validation report."""
+def test_cli_e2e(tmp_path: Path) -> None:
+    """Run the CLI end-to-end and validate entrance area."""
+    root = Path(__file__).resolve().parents[1]
     out_json = tmp_path / "solution.json"
     out_png = tmp_path / "solution.png"
-    out_report = tmp_path / "report.json"
+    out_report = tmp_path / "validation_report.json"
     cmd = [
-        "python",
+        sys.executable,
         "-m",
-        "wands.cli",
+        "wands",
         "--config",
         "rooms.yaml",
         "--out-json",
@@ -31,12 +32,13 @@ def test_cli_creates_output(tmp_path: Path) -> None:
         "--progress",
         "off",
     ]
-    subprocess.run(cmd, check=True)
+    result = subprocess.run(cmd, cwd=root, capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
     assert out_json.exists(), "solution.json not created"
     assert out_png.exists(), "solution.png not created"
     assert out_report.exists(), "validation report not created"
-    data = json.loads(out_json.read_text())
-    assert data["entrance"]["x1"] == 56
+    report = json.loads(out_report.read_text())
+    assert report["entrance_area"]["pass"] is True
 
 
 def test_cli_validate_only(tmp_path: Path) -> None:
@@ -81,6 +83,16 @@ def test_cli_validate_only(tmp_path: Path) -> None:
     subprocess.run(cmd2, check=True)
     assert report2.exists(), "validation report not created"
 
+
+def test_cli_version() -> None:
+    """The module reports its version string."""
+    result = subprocess.run(
+        [sys.executable, "-m", "wands", "--version"],
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert __version__ in result.stdout
 
 def test_start_process_version() -> None:
     """start_process.py should expose the package version."""
