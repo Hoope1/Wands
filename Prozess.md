@@ -72,6 +72,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 24. `rooms.yaml` auf Einzeilenformat standardisieren – ✔ erledigt
 25. Validator um diagonale Engstellen und Türengpässe erweitern – ✔ erledigt
 26. Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem ergänzen – ✔ erledigt
+27. `requirements.txt` mit Abhängigkeiten erstellen (Quelle: Benutzeranweisung) – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -104,6 +105,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | JSON-Schema für solution.json bereitstellen | ✔     | 2025-08-06T01:00:00Z   | Agent          |
 | Validator um diagonale Engstellen/Türengpässe erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
 | Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
+| `requirements.txt` für Abhängigkeiten erstellen | ✔     | 2025-08-09T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -121,3 +123,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-06T02:00:00Z – CLI-Tests für Versionsausgabe und Minimalablauf hinzugefügt
 - 2025-08-07T00:00:00Z – Logging, Progress, Checkpoint-Unterstützung und zusätzliche Validierungs-Tests ergänzt
 - 2025-08-08T00:00:00Z – Validator um diagonale Engstellen/Türengpässe erweitert und Fortschrittsstatistiken ergänzt
+- 2025-08-09T00:00:00Z – requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt
