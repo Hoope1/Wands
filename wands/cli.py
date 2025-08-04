@@ -4,6 +4,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import logging
+import signal
+import sys
+import time
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -11,7 +16,7 @@ from . import __version__
 from .config import load_room_defs
 from .model import SolveParams
 from .progress import Progress
-from .solver import solve
+from .solver import SolveInterrupted, solve
 from .validator import validate
 from .visualizer import render
 
@@ -32,6 +37,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--time-limit", type=float, default=1.0)
     parser.add_argument("--max-cut-rounds", type=int, default=10)
+    parser.add_argument("--log-level", default="INFO")
+    parser.add_argument("--log-format", choices=["text", "json"], default="text")
+    parser.add_argument("--log-file")
     parser.add_argument(
         "--progress",
         choices=["auto", "json", "off"],
@@ -48,12 +56,38 @@ def main(argv: Optional[List[str]] = None) -> int:
     """Run the command-line interface."""
     parser = _build_parser()
     args = parser.parse_args(argv)
+    log_stream = (
+        open(args.log_file, "a", encoding="utf8") if args.log_file else sys.stdout
+    )
+    logger = logging.getLogger("wands")
+    logger.setLevel(getattr(logging, args.log_level.upper(), logging.INFO))
+    handler = logging.StreamHandler(log_stream)
+
+    class JsonFormatter(logging.Formatter):
+        def format(
+            self, record: logging.LogRecord
+        ) -> str:  # pragma: no cover - formatting
+            data = {
+                "ts": datetime.utcnow().isoformat(),
+                "level": record.levelname.lower(),
+                "msg": record.getMessage(),
+            }
+            return json.dumps(data, ensure_ascii=False)
+
+    if args.log_format == "json":
+        formatter: logging.Formatter = JsonFormatter()
+    else:
+        formatter = logging.Formatter("%(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.handlers = [handler]
 
     prog: Optional[Progress] = None
     if args.progress != "off":
         fmt = "text" if args.progress == "auto" else "json"
-        prog = Progress(fmt=fmt, interval=args.progress_interval)
+        prog = Progress(stream=log_stream, fmt=fmt, interval=args.progress_interval)
         prog.heartbeat("start")
+    logger.info("phase=start")
+    interrupted = False
 
     if args.validate_only:
         solution = json.loads(Path(args.config).read_text(encoding="utf8"))
@@ -62,11 +96,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         if prog:
             prog.heartbeat("validate")
             prog.done()
+        logger.info("phase=validate")
+        logger.info("phase=finish")
+        if args.log_file:
+            log_stream.close()
         return 0
 
     room_defs = load_room_defs(args.config)
     if prog:
         prog.heartbeat("parse")
+    logger.info("phase=parse")
 
     params = SolveParams(
         grid_w=args.grid_w,
@@ -81,7 +120,46 @@ def main(argv: Optional[List[str]] = None) -> int:
     params.seed = args.seed
     params.threads = args.threads
 
-    solution = solve(room_defs, params)
+    last_checkpoint = 0.0
+
+    def checkpoint_cb(sol: dict) -> None:
+        nonlocal last_checkpoint
+        if args.checkpoint <= 0:
+            return
+        now = time.time()
+        if now - last_checkpoint < args.checkpoint:
+            return
+        Path(args.out_json).write_text(json.dumps(sol, indent=2), encoding="utf8")
+        report = validate(sol)
+        Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
+        render(sol, args.out_png)
+        last_checkpoint = now
+
+    def handle_sigint(signum, frame):
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGINT, handle_sigint)
+
+    try:
+        solution = solve(room_defs, params, progress=prog, checkpoint_cb=checkpoint_cb)
+        logger.info("phase=solve")
+    except Exception as exc:
+        if isinstance(exc, SolveInterrupted):
+            interrupted = True
+            solution = exc.solution or {
+                "rooms": [],
+                "entrance": {
+                    "x1": params.entrance_x,
+                    "x2": params.entrance_x + params.entrance_w,
+                    "y1": params.entrance_y,
+                    "y2": params.entrance_y + params.entrance_h,
+                },
+                "objective": {"room_area_total": 0},
+            }
+            logger.info("phase=solve")
+        else:
+            raise
+
     Path(args.out_json).write_text(json.dumps(solution, indent=2), encoding="utf8")
     if prog:
         prog.heartbeat("solve")
@@ -90,11 +168,19 @@ def main(argv: Optional[List[str]] = None) -> int:
     Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
     if prog:
         prog.heartbeat("validate")
+    logger.info("phase=validate")
 
     render(solution, args.out_png)
+    logger.info("phase=render")
     if prog:
+        phase = "finish" if not interrupted else "finish-abort"
         prog.heartbeat("render")
-        prog.done()
+        prog.done(phase)
+    else:
+        phase = "finish" if not interrupted else "finish-abort"
+    logger.info("phase=%s", phase)
+    if args.log_file:
+        log_stream.close()
     return 0
 
 

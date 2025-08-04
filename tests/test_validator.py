@@ -66,3 +66,50 @@ def test_validate_corridor_width_fail() -> None:
     }
     report = validate(solution)
     assert report["corridor_width"]["pass"] is False
+
+
+def test_validate_corridor_connectivity_fail() -> None:
+    """Disconnected corridor components should fail validation."""
+    room_a = {
+        "id": "a",
+        "type": "A",
+        "x": 1,
+        "y": 0,
+        "w": 10,
+        "h": 2,
+        "doors": [{"side": "right", "pos_x": 11, "pos_y": 1}],
+    }
+    room_b = {
+        "id": "b",
+        "type": "B",
+        "x": 0,
+        "y": 1,
+        "w": 11,
+        "h": 49,
+        "doors": [{"side": "right", "pos_x": 11, "pos_y": 25}],
+    }
+    solution = {
+        "rooms": [room_a, room_b],
+        "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
+    }
+    report = validate(solution)
+    assert report["corridor_connectivity"]["pass"] is False
+
+
+def test_validate_missing_door_fail() -> None:
+    """Rooms without doors should fail door validation."""
+    room = {
+        "id": "r",
+        "type": "T",
+        "x": 10,
+        "y": 10,
+        "w": 6,
+        "h": 6,
+        "doors": [],
+    }
+    solution = {
+        "rooms": [room],
+        "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
+    }
+    report = validate(solution)
+    assert report["doors"]["pass"] is False

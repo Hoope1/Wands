@@ -437,8 +437,9 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * `--log-level {DEBUG,INFO,WARN,ERROR}` (Default: `INFO`)
 * `--log-format {text,json}` (Default: `text`)
 * `--log-file <pfad>` (optional; sonst stdout)
-* `--progress {auto,off}` (Default: `auto`) – zeigt eine **fortlaufende Progress-Anzeige**
+* `--progress {auto,json,off}` (Default: `auto`) – zeigt eine **fortlaufende Progress-Anzeige**
 * `--progress-interval <sek>` (Default: `1`) – Mindestabstand zwischen Status-Updates
+* `--checkpoint <sek>` (optional) – speichert periodisch Zwischenstände
 * `--seed <int>` (Reproduzierbarkeit), `--time-limit <sek>` (optional), `--threads <n>` (optional)
 
 ### 16.2 Strukturierte Logs (Maschinen- & menschenlesbar)
@@ -515,3 +516,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-06: CLI um Grid- und Eingang-Parameter sowie Validierung-only-Modus erweitert.
 * 2025-08-06: `rooms.yaml` auf Einzeilenformat umgestellt und JSON-Schema `schemas/solution.schema.json` ergänzt.
 * 2025-08-06: CLI-Tests für Versionsausgabe und Minimalablauf ergänzt.
+* 2025-08-07: Logging/Progress ausgebaut, Checkpoints und zusätzliche Validator-Tests hinzugefügt.
