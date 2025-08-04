@@ -44,19 +44,6 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 14. **Tests**: Entwickle und erweitere Pytest‑basierte Tests für Geometrie und Validierung (Quelle: AGENTS.md#17; README.md#475-479).
 
 ---
-!!!noch fehlende punkte!!!
-( Neu hinzugefügt):
-Validator noch unvollständig: In den Agent‑Vorgaben steht ausdrücklich, dass der Validator bestimmte Spezialfälle wie diagonale Engstellen noch nicht korrekt prüft
-
-Fortschritts‑ und Logging‑Informationen zu spärlich: README Abschnitt 16 verlangt eine kontinuierliche Protokollierung mit detaillierten Feldern (z. B. objective_bound, gap, vars, constraints, mem_mb) sowie dynamische Progress‑Anzeige
-Der Solver liefert jedoch lediglich einen Heartbeat mit dem aktuellen Zielwert, und der Progress‑Reporter gibt nur einfache Zeilen aus, ohne weiterführende Metriken oder dynamischen Balken
-
-Validator verbessern: Ergänzen von Tests und Prüfungen für diagonale Engstellen, Engpässe an Türen und ähnliche Grenzfälle.
-
-Erweiterte Fortschrittsdaten: Aus dem Solver weitere Kennzahlen (Bound, Gap, Variablen‑/Constraint‑Zahlen, ETA, Speicherverbrauch) an den Progress‑Reporter übergeben, um den Vorgaben aus der README vollständig gerecht zu werden.
-
-Ausführlichere Tests & Logging: Mehr Unit‑Tests für seltene Problemkonstellationen und ein strukturierteres Logging (z. B. JSON‑Events mit Solver‑Statistiken) würden die Robustheit und Nachvollziehbarkeit erhöhen.
----
 
 ## Schritt-für-Schritt-Aufgabenliste
 1. Projekt mit Python ≥ 3.10 initialisieren (Quelle: AGENTS.md#12) – ✔ erledigt
@@ -83,6 +70,8 @@ Ausführlichere Tests & Logging: Mehr Unit‑Tests für seltene Problemkonstella
 22. Fortschrittsmodul für Heartbeat implementieren (Quelle: Benutzeranweisung) – ✔ erledigt
 23. JSON-Schema für `solution.json` bereitstellen (Quelle: Benutzeranweisung) – ✔ erledigt
 24. `rooms.yaml` auf Einzeilenformat standardisieren – ✔ erledigt
+25. Validator um diagonale Engstellen und Türengpässe erweitern – ✔ erledigt
+26. Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem ergänzen – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -113,6 +102,8 @@ Ausführlichere Tests & Logging: Mehr Unit‑Tests für seltene Problemkonstella
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 | Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
 | JSON-Schema für solution.json bereitstellen | ✔     | 2025-08-06T01:00:00Z   | Agent          |
+| Validator um diagonale Engstellen/Türengpässe erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
+| Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -129,3 +120,4 @@ Ausführlichere Tests & Logging: Mehr Unit‑Tests für seltene Problemkonstella
 - 2025-08-06T01:00:00Z – `rooms.yaml` auf Einzeilenformat gebracht und Lösungsschema ergänzt
 - 2025-08-06T02:00:00Z – CLI-Tests für Versionsausgabe und Minimalablauf hinzugefügt
 - 2025-08-07T00:00:00Z – Logging, Progress, Checkpoint-Unterstützung und zusätzliche Validierungs-Tests ergänzt
+- 2025-08-08T00:00:00Z – Validator um diagonale Engstellen/Türengpässe erweitert und Fortschrittsstatistiken ergänzt

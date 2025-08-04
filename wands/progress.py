@@ -46,7 +46,6 @@ class Progress:
             self.stream.write(json.dumps(asdict(event), ensure_ascii=False) + "\n")
         else:
             parts = [
-                event.ts,
                 event.phase,
                 f"t={event.runtime_sec:.3f}s",
             ]
@@ -66,7 +65,11 @@ class Progress:
                 parts.append(f"mem={event.mem_mb:.1f}MB")
             if event.note:
                 parts.append(event.note)
-            self.stream.write(" ".join(parts) + "\n")
+            line = " ".join(parts)
+            if getattr(self.stream, "isatty", lambda: False)():
+                self.stream.write("\r" + line.ljust(80))
+            else:
+                self.stream.write(f"{event.ts} {line}\n")
         self.stream.flush()
 
     def heartbeat(self, phase: str, **data: Any) -> None:
@@ -94,3 +97,6 @@ class Progress:
             **data,
         )
         self._write(event)
+        if getattr(self.stream, "isatty", lambda: False)() and self.fmt != "json":
+            self.stream.write("\n")
+            self.stream.flush()

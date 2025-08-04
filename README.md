@@ -517,3 +517,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-06: `rooms.yaml` auf Einzeilenformat umgestellt und JSON-Schema `schemas/solution.schema.json` ergänzt.
 * 2025-08-06: CLI-Tests für Versionsausgabe und Minimalablauf ergänzt.
 * 2025-08-07: Logging/Progress ausgebaut, Checkpoints und zusätzliche Validator-Tests hinzugefügt.
+* 2025-08-08: Validator auf diagonale Engstellen/Türengpässe erweitert, Fortschrittsstatistiken ergänzt.

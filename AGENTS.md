@@ -34,7 +34,7 @@ Diese Vorgaben gelten für das gesamte Repository.
 - Frühere Einträge niemals entfernen.
 
 ## Offene Punkte
-- Validator deckt noch nicht alle Spezialfälle ab (z. B. diagonale Engstellen).
+Keine
 
 ## Aktualisierung
 - 2024-06-02: Grundgerüst (CLI, Konfigurationsladen, Dummy-Solver, Visualisierung, einfache Validierung) erstellt.
@@ -50,3 +50,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2025-08-05: CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert.
 - 2025-08-06: CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert.
 - 2025-08-07: Logging, Fortschrittsanzeige, Checkpoints und zusätzliche Tests ergänzt.
+- 2025-08-08: Validator um diagonale Engstellen/Türengpässe erweitert, Fortschrittsdaten aus Solver ergänzt.
