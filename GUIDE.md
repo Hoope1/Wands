@@ -8,10 +8,9 @@
    !git clone <REPO_URL>
    %cd Wands
    ```
-3. Benötigte Pakete installieren:
+3. Abhängigkeiten aus der gepflegten `requirements.txt` installieren:
    ```bash
-   !pip install ortools pillow pyyaml
-   !pip install ruff pytest
+   !pip install -r requirements.txt
    ```
 
 ## Start über die CLI
