@@ -12,6 +12,7 @@ maximum number of cut rounds is reached.
 from __future__ import annotations
 
 from collections import deque
+import resource
 from typing import Callable, List, Sequence
 
 from ortools.sat.python import cp_model
@@ -346,7 +347,20 @@ def solve(
                 "objective": {"room_area_total": area_total},
             }
             if progress:
-                progress.heartbeat("solve", objective_best=area_total)
+                bound = solver.best_objective_bound
+                gap = None
+                if bound:
+                    gap = (bound - area_total) / bound
+                mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+                progress.heartbeat(
+                    "solve",
+                    objective_best=area_total,
+                    objective_bound=bound,
+                    gap=gap,
+                    vars=len(model.Proto().variables),
+                    constraints=len(model.Proto().constraints),
+                    mem_mb=mem,
+                )
             if checkpoint_cb:
                 checkpoint_cb(last_solution)
 

@@ -66,6 +66,35 @@ def test_validate_corridor_width_fail() -> None:
     }
     report = validate(solution)
     assert report["corridor_width"]["pass"] is False
+    assert report["doors"]["pass"] is False
+
+
+def test_validate_diagonal_pinch_fail() -> None:
+    """Diagonal corridor pinches should fail validation."""
+    room_a = {
+        "id": "a",
+        "type": "A",
+        "x": 10,
+        "y": 10,
+        "w": 4,
+        "h": 4,
+        "doors": [{"side": "right", "pos_x": 14, "pos_y": 11}],
+    }
+    room_b = {
+        "id": "b",
+        "type": "B",
+        "x": 14,
+        "y": 14,
+        "w": 4,
+        "h": 4,
+        "doors": [{"side": "left", "pos_x": 14, "pos_y": 15}],
+    }
+    solution = {
+        "rooms": [room_a, room_b],
+        "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
+    }
+    report = validate(solution)
+    assert report["corridor_width"]["pass"] is False
 
 
 def test_validate_corridor_connectivity_fail() -> None:

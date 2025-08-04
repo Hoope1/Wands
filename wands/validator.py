@@ -39,8 +39,45 @@ def build_grid(solution: Dict) -> Tuple[List[List[int]], Dict[str, bool]]:
     return grid, flags
 
 
+def _corridor_line_width(grid: List[List[int]], i: int, j: int) -> int:
+    """Return the maximum straight corridor width through ``(i,j)``."""
+    left = right = up = down = 0
+    for x in range(i - 1, -1, -1):
+        if grid[j][x] != 0:
+            break
+        left += 1
+    for x in range(i + 1, GRID_W):
+        if grid[j][x] != 0:
+            break
+        right += 1
+    for y in range(j - 1, -1, -1):
+        if grid[y][i] != 0:
+            break
+        down += 1
+    for y in range(j + 1, GRID_H):
+        if grid[y][i] != 0:
+            break
+        up += 1
+    return max(left + right + 1, up + down + 1)
+
+
+def _has_diagonal_pinch(grid: List[List[int]]) -> Tuple[bool, Tuple[int, int] | None]:
+    """Detect 2×2 diagonal narrowings in the corridor."""
+    for i in range(GRID_W - 1):
+        for j in range(GRID_H - 1):
+            a = grid[j][i]
+            b = grid[j][i + 1]
+            c = grid[j + 1][i]
+            d = grid[j + 1][i + 1]
+            if a > 0 and d > 0 and b == 0 and c == 0:
+                return True, (i, j)
+            if b > 0 and c > 0 and a == 0 and d == 0:
+                return True, (i, j)
+    return False, None
+
+
 def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
-    """Verify that the corridor covers every 4×4 window."""
+    """Verify minimal corridor width including diagonal narrowings."""
     for j in range(GRID_H):
         for i in range(GRID_W):
             if grid[j][i] != 0:
@@ -48,12 +85,16 @@ def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
             anchors = windows_covering_cell(i, j, GRID_W, GRID_H, WIN)
             for a, b in anchors:
                 if all(
-                    grid[yy][xx] == 0
-                    for xx, yy in iter_window_cells(a, b, WIN)
+                    grid[yy][xx] == 0 for xx, yy in iter_window_cells(a, b, WIN)
                 ):
                     break
             else:
                 return False, f"Engstelle bei ({i},{j})"
+            if _corridor_line_width(grid, i, j) < WIN:
+                return False, f"Engstelle bei ({i},{j})"
+    pinch, pos = _has_diagonal_pinch(grid)
+    if pinch and pos is not None:
+        return False, f"Diagonale Engstelle bei {pos}"
     return True, "Breite ≥4 überall"
 
 
@@ -130,6 +171,11 @@ def _check_doors(
             if grid[ay][ax] != 0:
                 errors.append(
                     f"Tür von Raum {room.get('id')} führt nicht in Gang"
+                )
+                continue
+            if _corridor_line_width(grid, ax, ay) < WIN:
+                errors.append(
+                    f"Tür von Raum {room.get('id')} führt in Engstelle"
                 )
                 continue
             if require_no_outside_doors and (
