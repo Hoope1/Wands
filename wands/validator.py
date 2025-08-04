@@ -1,158 +1,221 @@
-"""Validator for computed room layouts.
-
-This module performs a number of geometric checks on the generated
-solution.  It verifies that rooms do not overlap, the corridor forms one
-connected component of width at least four cells and that every door
-opens into the corridor.  The implementation intentionally favours a
-straight‑forward brute force approach over micro‑optimisations to keep the
-logic easy to reason about.
-"""
-
+"""Validator for computed room layouts."""
 from __future__ import annotations
 
 from collections import deque
-from typing import Dict, Iterable, List, Set, Tuple
+from typing import Dict, List, Set, Tuple
+
+from .utils import iter_window_cells, neighbors4, windows_covering_cell
 
 GRID_W, GRID_H = 77, 50
+WIN = 4
 
 
-def _check_corridor_width(grid: List[List[int]]) -> bool:
-    """Return ``True`` if no corridor segment is narrower than four cells.
+def build_grid(solution: Dict) -> Tuple[List[List[int]], Dict[str, bool]]:
+    """Build an occupancy grid from ``solution``."""
+    grid: List[List[int]] = [[0 for _ in range(GRID_W)] for _ in range(GRID_H)]
+    ent = solution.get("entrance", {"x1": 56, "x2": 60, "y1": 40, "y2": 50})
 
-    The function scans each row and column of the grid and ensures that any
-    sequence of corridor cells that is bounded by room cells or the plot
-    boundary has length ≥4.  Although this is an \O(n²) procedure, the grid
-    size is small enough that the exhaustive check is acceptable.
-    """
+    flags = {"entrance_area": True, "no_overlap": True, "bounds": True}
+    rooms = solution.get("rooms", [])
 
-    def _scan(lines: Iterable[Iterable[int]]) -> bool:
-        for line in lines:
-            run = 0
-            for cell in line:
-                if cell == 0:  # corridor
-                    run += 1
+    for rid, room in enumerate(rooms, start=1):
+        x, y, w, h = room["x"], room["y"], room["w"], room["h"]
+        if not (0 <= x and 0 <= y and x + w <= GRID_W and y + h <= GRID_H):
+            flags["no_overlap"] = False
+            flags["bounds"] = False
+        for i in range(x, x + w):
+            for j in range(y, y + h):
+                if not (0 <= i < GRID_W and 0 <= j < GRID_H):
+                    flags["no_overlap"] = False
+                    flags["bounds"] = False
+                    continue
+                if ent["x1"] <= i < ent["x2"] and ent["y1"] <= j < ent["y2"]:
+                    flags["entrance_area"] = False
+                if grid[j][i] == 0:
+                    grid[j][i] = rid
                 else:
-                    if 0 < run < 4:
-                        return False
-                    run = 0
-            if 0 < run < 4:
-                return False
-        return True
-
-    if not _scan(grid):
-        return False
-    if not _scan(zip(*grid)):
-        return False
-    return True
+                    flags["no_overlap"] = False
+                    grid[j][i] = -1
+    return grid, flags
 
 
-def _flood_fill(start: Tuple[int, int], grid: List[List[int]]) -> Set[Tuple[int, int]]:
-    """Return the set of corridor cells reachable from ``start``."""
+def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
+    """Verify that the corridor covers every 4×4 window."""
+    for j in range(GRID_H):
+        for i in range(GRID_W):
+            if grid[j][i] != 0:
+                continue
+            anchors = windows_covering_cell(i, j, GRID_W, GRID_H, WIN)
+            for a, b in anchors:
+                if all(
+                    grid[yy][xx] == 0
+                    for xx, yy in iter_window_cells(a, b, WIN)
+                ):
+                    break
+            else:
+                return False, f"Engstelle bei ({i},{j})"
+    return True, "Breite ≥4 überall"
+
+
+def _bfs(
+    start: Tuple[int, int], grid: List[List[int]]
+) -> Set[Tuple[int, int]]:
+    """Breadth first search over corridor cells."""
+    if not (0 <= start[0] < GRID_W and 0 <= start[1] < GRID_H):
+        return set()
+    if grid[start[1]][start[0]] != 0:
+        return set()
 
     q: deque[Tuple[int, int]] = deque([start])
     seen: Set[Tuple[int, int]] = set()
     while q:
-        x, y = q.popleft()
-        if (x, y) in seen:
+        i, j = q.popleft()
+        if (i, j) in seen:
             continue
-        seen.add((x, y))
-        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-            nx, ny = x + dx, y + dy
-            if 0 <= nx < GRID_W and 0 <= ny < GRID_H and grid[ny][nx] == 0:
-                q.append((nx, ny))
+        seen.add((i, j))
+        for ni, nj in neighbors4(i, j, GRID_W, GRID_H):
+            if grid[nj][ni] == 0 and (ni, nj) not in seen:
+                q.append((ni, nj))
     return seen
 
 
-def validate(solution: Dict) -> Dict[str, bool]:
-    """Validate a solution dictionary and return a report."""
+def _door_adjacent(
+    room: Dict, door: Dict
+) -> Tuple[bool, Tuple[int, int] | None]:
+    x, y, w, h = room["x"], room["y"], room["w"], room["h"]
+    side = door.get("side")
+    px = door.get("pos_x")
+    py = door.get("pos_y")
+    if side == "left":
+        if px != x or not (y < py < y + h - 1):
+            return False, None
+        return True, (px - 1, py)
+    if side == "right":
+        if px != x + w or not (y < py < y + h - 1):
+            return False, None
+        return True, (px, py)
+    if side == "bottom":
+        if py != y or not (x < px < x + w - 1):
+            return False, None
+        return True, (px, py - 1)
+    if side == "top":
+        if py != y + h or not (x < px < x + w - 1):
+            return False, None
+        return True, (px, py)
+    return False, None
 
-    report = {
-        "complement": True,
-        "entrance": True,
-        "no_overlap": True,
-        "corridor_width": True,
-        "connectivity": True,
-        "doors": True,
-        "reachability": True,
-    }
 
-    # build occupancy grid: 0 = corridor, 1 = room
-    grid: List[List[int]] = [[0 for _ in range(GRID_W)] for _ in range(GRID_H)]
-
-    ent = solution.get("entrance", {"x1": 56, "x2": 60, "y1": 40, "y2": 50})
-
-    # place rooms and check overlaps
-    rooms = solution.get("rooms", [])
+def _check_doors(
+    rooms: List[Dict],
+    grid: List[List[int]],
+    reachable: Set[Tuple[int, int]],
+    require_no_outside_doors: bool,
+) -> Tuple[bool, str]:
+    errors: List[str] = []
     for room in rooms:
-        x, y, w, h = room["x"], room["y"], room["w"], room["h"]
-        if not (0 <= x < GRID_W and 0 <= y < GRID_H and x + w <= GRID_W and y + h <= GRID_H):
-            report["no_overlap"] = False
-        for i in range(x, x + w):
-            for j in range(y, y + h):
-                if ent["x1"] <= i < ent["x2"] and ent["y1"] <= j < ent["y2"]:
-                    report["entrance"] = False
-                if grid[j][i] == 1:
-                    report["no_overlap"] = False
-                grid[j][i] = 1
+        doors = room.get("doors", [])
+        if not doors:
+            errors.append(f"Raum {room.get('id')} ohne Tür")
+            continue
+        valid = False
+        for door in doors:
+            ok, adj = _door_adjacent(room, door)
+            if not ok or adj is None:
+                errors.append(f"Ungültige Tür in Raum {room.get('id')}")
+                continue
+            ax, ay = adj
+            if not (0 <= ax < GRID_W and 0 <= ay < GRID_H):
+                errors.append(f"Tür von Raum {room.get('id')} außerhalb")
+                continue
+            if grid[ay][ax] != 0:
+                errors.append(
+                    f"Tür von Raum {room.get('id')} führt nicht in Gang"
+                )
+                continue
+            if require_no_outside_doors and (
+                ax in {0, GRID_W - 1} or ay in {0, GRID_H - 1}
+            ):
+                errors.append(
+                    f"Tür von Raum {room.get('id')} am Außenrand"
+                )
+                continue
+            if (ax, ay) not in reachable:
+                errors.append(
+                    f"Tür von Raum {room.get('id')} nicht erreichbar"
+                )
+                continue
+            valid = True
+        if not valid:
+            errors.append(f"Raum {room.get('id')} ohne gültige Tür")
+    if errors:
+        return False, "; ".join(errors)
+    return True, "Alle Türen gültig"
 
-    # verify entrance cells are corridor
-    for i in range(ent["x1"], ent["x2"]):
-        for j in range(ent["y1"], ent["y2"]):
-            if grid[j][i] != 0:
-                report["entrance"] = False
 
-    # corridor width check
-    if not _check_corridor_width(grid):
-        report["corridor_width"] = False
+def validate(
+    solution: Dict, require_no_outside_doors: bool = False
+) -> Dict[str, Dict[str, object]]:
+    """Validate ``solution`` and return a structured report."""
+    grid, flags = build_grid(solution)
 
-    # connectivity via flood fill from first entrance cell
-    start = (ent["x1"], ent["y1"])
-    reachable = _flood_fill(start, grid)
-    corridor_cells = {
+    corridor_cells = [
         (i, j)
         for j in range(GRID_H)
         for i in range(GRID_W)
         if grid[j][i] == 0
+    ]
+    room_cells = [
+        (i, j)
+        for j in range(GRID_H)
+        for i in range(GRID_W)
+        if grid[j][i] > 0
+    ]
+    unknown_cells = [
+        (i, j)
+        for j in range(GRID_H)
+        for i in range(GRID_W)
+        if grid[j][i] < 0
+    ]
+
+    complement_pass = not unknown_cells and flags["bounds"]
+    report: Dict[str, Dict[str, object]] = {
+        "complement": {
+            "pass": complement_pass,
+            "info": f"corridor={len(corridor_cells)} rooms={len(room_cells)}",
+        },
+        "entrance_area": {
+            "pass": flags["entrance_area"],
+            "info": (
+                "Eingang frei"
+                if flags["entrance_area"]
+                else "Eingang blockiert"
+            ),
+        },
+        "no_overlap": {
+            "pass": flags["no_overlap"] and flags["bounds"],
+            "info": (
+                "keine Überlappung"
+                if flags["no_overlap"]
+                else "Überlappung/Bereichsfehler"
+            ),
+        },
     }
-    if corridor_cells != reachable:
-        report["connectivity"] = False
 
-    # door checks
-    for room in rooms:
-        doors = room.get("doors", [])
-        if not doors:
-            report["doors"] = False
-            continue
-        for door in doors:
-            side = door.get("side")
-            px = door.get("pos_x")
-            py = door.get("pos_y")
-            if side == "left":
-                if px != room["x"] or not (room["y"] < py < room["y"] + room["h"] - 1):
-                    report["doors"] = False
-                adj = (px - 1, py)
-            elif side == "right":
-                if px != room["x"] + room["w"] or not (room["y"] < py < room["y"] + room["h"] - 1):
-                    report["doors"] = False
-                adj = (px, py)
-            elif side == "bottom":
-                if py != room["y"] or not (room["x"] < px < room["x"] + room["w"] - 1):
-                    report["doors"] = False
-                adj = (px, py - 1)
-            elif side == "top":
-                if py != room["y"] + room["h"] or not (room["x"] < px < room["x"] + room["w"] - 1):
-                    report["doors"] = False
-                adj = (px, py)
-            else:
-                report["doors"] = False
-                continue
+    width_ok, width_info = _check_corridor_width(grid)
+    report["corridor_width"] = {"pass": width_ok, "info": width_info}
 
-            ax, ay = adj
-            if not (0 <= ax < GRID_W and 0 <= ay < GRID_H) or grid[ay][ax] != 0:
-                report["doors"] = False
-            if (ax, ay) not in reachable:
-                report["reachability"] = False
+    ent = solution.get("entrance", {"x1": 56, "x2": 60, "y1": 40, "y2": 50})
+    start = (ent["x1"], ent["y1"])
+    reachable = _bfs(start, grid)
+    corr_set = set(corridor_cells)
+    conn_pass = corr_set == reachable
+    report["corridor_connectivity"] = {
+        "pass": conn_pass,
+        "info": f"erreichbar={len(reachable)} corridor={len(corr_set)}",
+    }
 
-    report["valid"] = all(report.values())
+    doors_pass, doors_info = _check_doors(
+        solution.get("rooms", []), grid, reachable, require_no_outside_doors
+    )
+    report["doors"] = {"pass": doors_pass, "info": doors_info}
     return report
-
