@@ -1,14 +1,17 @@
-ortools>=9.14
-pillow>=11.3
-pyyaml>=6.0.2
-pytest>=8.4.1
-ruff>=0.9.3
-flake8>=7.3.0
-isort>=6.0.1
-pyright>=1.1.359
-mypy>=1.7.1
-vulture>=2.14
-xenon>=0.9.3
-radon>=6.0.1
-pre-commit>=4.2.0
-protobuf>=5.26.1,<6
+# Laufzeit (Repo "Wands")
+protobuf==5.29.5
+ortools==9.12.4544
+pillow==11.3.0
+pyyaml==6.0.2
+
+# Test & Code-Qualität
+pytest==8.4.1
+ruff==0.12.7
+flake8==7.3.0
+isort==6.0.1
+pyright==1.1.403
+mypy==1.11.2
+vulture==2.14
+xenon==0.9.3
+radon==6.0.1
+pre-commit==4.2.0
