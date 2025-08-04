@@ -66,6 +66,8 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 20. Prozessstarter-Skript `start_process.py` mit Standardpfaden bereitstellen – ✔ erledigt
 21. Datenmodelle `RoomPlacement` und `SolveParams` ergänzen (Quelle: Benutzeranweisung) – ✔ erledigt
 22. Fortschrittsmodul für Heartbeat implementieren (Quelle: Benutzeranweisung) – ✔ erledigt
+23. JSON-Schema für `solution.json` bereitstellen (Quelle: Benutzeranweisung) – ✔ erledigt
+24. `rooms.yaml` auf Einzeilenformat standardisieren – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -94,6 +96,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
 | Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
+| JSON-Schema für solution.json bereitstellen | ✔     | 2025-08-06T01:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -107,3 +110,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T00:24:03Z – Validator um 4×4-Gangprüfung und Türvalidierung erweitert
 - 2025-08-05T00:00:00Z – CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert
 - 2025-08-06T00:00:00Z – CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert
+- 2025-08-06T01:00:00Z – `rooms.yaml` auf Einzeilenformat gebracht und Lösungsschema ergänzt

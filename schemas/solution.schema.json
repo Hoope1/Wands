@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Wands Solution",
+  "type": "object",
+  "required": ["grid_w", "grid_h", "entrance", "rooms", "objective"],
+  "properties": {
+    "grid_w": {"type": "integer", "minimum": 1},
+    "grid_h": {"type": "integer", "minimum": 1},
+    "entrance": {
+      "type": "object",
+      "required": ["x1", "x2", "y1", "y2"],
+      "properties": {
+        "x1": {"type": "integer"},
+        "x2": {"type": "integer"},
+        "y1": {"type": "integer"},
+        "y2": {"type": "integer"}
+      },
+      "additionalProperties": false
+    },
+    "rooms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "x", "y", "w", "h", "doors"],
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"type": "string"},
+          "x": {"type": "integer", "minimum": 0},
+          "y": {"type": "integer", "minimum": 0},
+          "w": {"type": "integer", "minimum": 1},
+          "h": {"type": "integer", "minimum": 1},
+          "doors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["side", "pos_x", "pos_y"],
+              "properties": {
+                "side": {"type": "string", "enum": ["left", "right", "top", "bottom"]},
+                "pos_x": {"type": "integer"},
+                "pos_y": {"type": "integer"}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "objective": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "number"}
+    }
+  },
+  "additionalProperties": true
+}
