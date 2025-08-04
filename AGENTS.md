@@ -52,3 +52,4 @@ Keine
 - 2025-08-07: Logging, Fortschrittsanzeige, Checkpoints und zusätzliche Tests ergänzt.
 - 2025-08-08: Validator um diagonale Engstellen/Türengpässe erweitert, Fortschrittsdaten aus Solver ergänzt.
 - 2025-08-09: requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt.
+- 2025-08-10: GUIDE.md mit Colab-Installations- und Startanleitung ergänzt.
