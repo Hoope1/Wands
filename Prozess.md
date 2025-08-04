@@ -65,6 +65,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 19. Tests für Geometrie und Validierung erweitern (Quelle: AGENTS.md#17; README.md#475-479) – ✖ offen
 20. Prozessstarter-Skript `start_process.py` mit Standardpfaden bereitstellen – ✔ erledigt
 21. Datenmodelle `RoomPlacement` und `SolveParams` ergänzen (Quelle: Benutzeranweisung) – ✔ erledigt
+22. Fortschrittsmodul für Heartbeat implementieren (Quelle: Benutzeranweisung) – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -85,7 +86,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 |---------------------------------------------|:------:|------------------------|----------------|
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
 | Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
-| Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-03T21:25:34Z   | Agent          |
+| Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-04T03:00:00Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
@@ -97,3 +98,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T00:00:00Z – Prozessstarter-Skript hinzugefügt
 - 2025-08-04T01:00:00Z – Datenmodelle für RoomPlacement und SolveParams ergänzt
 - 2025-08-04T02:00:00Z – Hilfsfunktionen für Rasteroperationen und Tests ergänzt
+- 2025-08-04T03:00:00Z – Fortschrittsmodul mit Heartbeat und Abschluss implementiert
