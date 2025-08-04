@@ -49,12 +49,12 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 3. CpModel und Variablen `x,y,w,h` pro Raum definieren (Quelle: README-SPEC.md#9) – ✔ erledigt
 4. Eingangsbereich als stets freien Gang modellieren (Quelle: README.md#41-45; README-SPEC.md#15) – ✔ erledigt
 5. Rand- und Rastergrenzen (`x+w≤77`, `y+h≤50`) absichern (Quelle: README-SPEC.md#36) – ✔ erledigt
-6. Nichtüberlappung durch Lage-Binärvariablen erzwingen (Quelle: README-SPEC.md#19) – ✖ offen
-7. Mindest‑Gangbreite ≥4 überall sicherstellen (Quelle: README.md#91-98; README-SPEC.md#21) – ✖ offen
-8. Gang-Konnektivität via Flussmodell herstellen (Quelle: README-SPEC.md#23) – ✖ offen
-9. Pro Raum mindestens eine Tür zum Gang anlegen (Quelle: README.md#73-84; README-SPEC.md#25) – ✖ offen
-10. Zielfunktion zur Maximierung der Raumfläche definieren (Quelle: README-SPEC.md#11) – ✖ offen
-11. Solver starten und bei Abbruch beste Lösung sichern (Quelle: README-SPEC.md#28) – ✖ offen
+6. Nichtüberlappung durch Lage-Binärvariablen erzwingen (Quelle: README-SPEC.md#19) – ✔ erledigt
+7. Mindest‑Gangbreite ≥4 überall sicherstellen (Quelle: README.md#91-98; README-SPEC.md#21) – ✔ erledigt
+8. Gang-Konnektivität via Flussmodell herstellen (Quelle: README-SPEC.md#23) – ✔ erledigt
+9. Pro Raum mindestens eine Tür zum Gang anlegen (Quelle: README.md#73-84; README-SPEC.md#25) – ✔ erledigt
+10. Zielfunktion zur Maximierung der Raumfläche definieren (Quelle: README-SPEC.md#11) – ✔ erledigt
+11. Solver starten und bei Abbruch beste Lösung sichern (Quelle: README-SPEC.md#28) – ✔ erledigt
 12. `solution.json` generieren (Quelle: README-SPEC.md#44-52) – ✖ offen
 13. `solution.png` rendern (Quelle: README-SPEC.md#55) – ✔ erledigt
 14. `validation_report.json` schreiben (Quelle: README-SPEC.md#57-81) – ✖ offen
@@ -71,6 +71,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
 - Eingang `x1=56`, `x2=60`, `y1=40`, `y2=50` (Quelle: README.md#41-45)
 - Korridorfenster `corridor_win=4` (Quelle: Benutzeranweisung)
+- Iterative Cuts `max_cut_rounds=10` (Quelle: Benutzeranweisung)
 - CLI: `--log-level {DEBUG,INFO,WARN,ERROR}` (Quelle: README.md#411)
 - CLI: `--log-format {text,json}` (Quelle: README.md#412)
 - CLI: `--log-file <pfad>` (Quelle: README.md#413)
@@ -85,7 +86,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Aufgabe                                     | Status | Letzte Änderung        | Verantwortlich |
 |---------------------------------------------|:------:|------------------------|----------------|
 | Prozessdokumentation aufsetzen              | ✔     | 2025-08-03T22:05:52Z   | Agent          |
-| Algorithmus zur Raumverteilung implementieren| ✖     | 2025-08-03T21:40:00Z   | Agent          |
+| Algorithmus zur Raumverteilung implementieren| ✔     | 2025-08-05T00:00:00Z   | Agent          |
 | Logging & Fortschrittsanzeige ausbauen      | ✖     | 2025-08-04T03:00:00Z   | Agent          |
 | Tests erweitern                             | ✖     | 2025-08-04T00:24:03Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
@@ -102,3 +103,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T03:00:00Z – Fortschrittsmodul mit Heartbeat und Abschluss implementiert
 - 2025-08-04T00:12:49Z – Visualisierung mit Raster, Farben und Türen ergänzt
 - 2025-08-04T00:24:03Z – Validator um 4×4-Gangprüfung und Türvalidierung erweitert
+- 2025-08-05T00:00:00Z – CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert

@@ -11,6 +11,7 @@ from pathlib import Path
 
 from . import __version__
 from .config import load_room_defs
+from .model import SolveParams
 from .solver import solve
 from .validator import validate
 from .visualizer import render
@@ -37,6 +38,7 @@ PHASES = ["parse", "build", "solve", "validate", "render", "finish"]
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the command-line interface."""
     parser = argparse.ArgumentParser(prog="wands")
     parser.add_argument("--config", required=True)
     parser.add_argument("--out-json", required=True)
@@ -70,7 +72,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.progress != "off":
         logger.info("phase=%s", "parse")
         time.sleep(args.progress_interval)
-    solution = solve(room_defs, seed=args.seed)
+    params = SolveParams()
+    solution = solve(room_defs, params)
     Path(args.out_json).write_text(json.dumps(solution, indent=2), encoding="utf8")
     if args.progress != "off":
         logger.info("phase=%s", "solve")
