@@ -509,3 +509,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-04: Datenmodelle für RoomPlacement und SolveParams ergänzt.
 * 2025-08-04: Hilfsfunktionen für Rasteroperationen und entsprechende Tests ergänzt.
 * 2025-08-04: Fortschrittsmodul für Heartbeat-Logging hinzugefügt.
+* 2025-08-04: Visualisierung mit Raster, Farben und Türen erweitert.
