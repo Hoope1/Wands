@@ -511,3 +511,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-04: Fortschrittsmodul für Heartbeat-Logging hinzugefügt.
 * 2025-08-04: Visualisierung mit Raster, Farben und Türen erweitert.
 * 2025-08-04: Validator auf Grid-Aufbau mit 4×4-Gangprüfung und Türlogik umgestellt.
+* 2025-08-05: CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert.

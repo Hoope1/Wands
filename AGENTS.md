@@ -34,7 +34,6 @@ Diese Vorgaben gelten für das gesamte Repository.
 - Frühere Einträge niemals entfernen.
 
 ## Offene Punkte
-- Algorithmus zur Raumverteilung unvollständig (Optimierung, Nichtüberlappung usw. fehlen).
 - Validator deckt noch nicht alle Spezialfälle ab (z. B. diagonale Engstellen).
 - Logging und Fortschrittsanzeige gemäß Spezifikation ausbauen.
 - Tests für Geometrie und Validierung erweitern.
@@ -50,3 +49,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2025-08-04: Fortschrittsmodul mit Heartbeat und Abschluss implementiert.
 - 2025-08-04: Visualisierung mit Raster, Farben und Türen erweitert.
 - 2025-08-04: Validator auf Grid-Aufbau, 4×4-Breitenprüfung und Türlogik aktualisiert.
+- 2025-08-05: CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert.
