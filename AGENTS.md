@@ -48,3 +48,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2025-08-04: Datenmodelle `RoomPlacement` und `SolveParams` ergänzt.
 - 2025-08-04: Hilfsfunktionen für Rasteroperationen hinzugefügt.
 - 2025-08-04: Fortschrittsmodul mit Heartbeat und Abschluss implementiert.
+- 2025-08-04: Visualisierung mit Raster, Farben und Türen erweitert.

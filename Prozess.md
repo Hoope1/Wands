@@ -56,7 +56,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 10. Zielfunktion zur Maximierung der Raumfläche definieren (Quelle: README-SPEC.md#11) – ✖ offen
 11. Solver starten und bei Abbruch beste Lösung sichern (Quelle: README-SPEC.md#28) – ✖ offen
 12. `solution.json` generieren (Quelle: README-SPEC.md#44-52) – ✖ offen
-13. `solution.png` rendern (Quelle: README-SPEC.md#55) – ✖ offen
+13. `solution.png` rendern (Quelle: README-SPEC.md#55) – ✔ erledigt
 14. `validation_report.json` schreiben (Quelle: README-SPEC.md#57-81) – ✖ offen
 15. CLI‑Schalter implementieren (`--log-level`, `--log-format`, `--log-file`, `--progress`, `--progress-interval`, `--seed`, `--time-limit`, `--threads`) (Quelle: README.md#409-416) – ✔ erledigt
 16. Strukturierte Logs und Progress-Anzeige entwickeln (Quelle: README.md#418-439; README-SPEC.md#83-91) – ✖ offen
@@ -90,6 +90,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Tests erweitern                             | ✖     | 2025-08-03T21:25:34Z   | Agent          |
 | Prozessstarter-Skript hinzufügen            | ✔     | 2025-08-04T00:00:00Z   | Agent          |
 | Datenmodelle für RoomPlacement/SolveParams ergänzen | ✔     | 2025-08-04T01:00:00Z   | Agent          |
+| Visualisierung für solution.png implementieren | ✔     | 2025-08-04T00:12:49Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -99,3 +100,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T01:00:00Z – Datenmodelle für RoomPlacement und SolveParams ergänzt
 - 2025-08-04T02:00:00Z – Hilfsfunktionen für Rasteroperationen und Tests ergänzt
 - 2025-08-04T03:00:00Z – Fortschrittsmodul mit Heartbeat und Abschluss implementiert
+- 2025-08-04T00:12:49Z – Visualisierung mit Raster, Farben und Türen ergänzt
