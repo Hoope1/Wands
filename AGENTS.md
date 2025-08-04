@@ -50,3 +50,4 @@ Diese Vorgaben gelten für das gesamte Repository.
 - 2025-08-04: Visualisierung mit Raster, Farben und Türen erweitert.
 - 2025-08-04: Validator auf Grid-Aufbau, 4×4-Breitenprüfung und Türlogik aktualisiert.
 - 2025-08-05: CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert.
+- 2025-08-06: CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert.

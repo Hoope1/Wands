@@ -4,92 +4,97 @@ from __future__ import annotations
 
 import argparse
 import json
-import logging
-import sys
-import time
 from pathlib import Path
+from typing import List, Optional
 
 from . import __version__
 from .config import load_room_defs
 from .model import SolveParams
+from .progress import Progress
 from .solver import solve
 from .validator import validate
 from .visualizer import render
 
 
-def configure_logging(level: str, fmt: str, log_file: str | None) -> None:
-    """Configure application logging."""
-    log_level = getattr(logging, level.upper(), logging.INFO)
-    handlers = []
-    if log_file:
-        handlers.append(logging.FileHandler(log_file))
-    else:
-        handlers.append(logging.StreamHandler(sys.stdout))
-    if fmt == "json":
-        formatter = logging.Formatter("%(message)s")
-    else:
-        formatter = logging.Formatter("%(asctime)s %(levelname)s %(message)s")
-    for h in handlers:
-        h.setFormatter(formatter)
-    logging.basicConfig(level=log_level, handlers=handlers, force=True)
-
-
-PHASES = ["parse", "build", "solve", "validate", "render", "finish"]
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Run the command-line interface."""
+def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="wands")
     parser.add_argument("--config", required=True)
     parser.add_argument("--out-json", required=True)
     parser.add_argument("--out-png", required=True)
     parser.add_argument("--validate", required=True, dest="report")
-    parser.add_argument("--log-level", default="INFO")
-    parser.add_argument("--log-format", choices=["text", "json"], default="text")
-    parser.add_argument("--log-file")
-    parser.add_argument("--progress", choices=["auto", "off"], default="auto")
-    parser.add_argument("--progress-interval", type=int, default=1)
-    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--grid-w", type=int, default=77)
+    parser.add_argument("--grid-h", type=int, default=50)
+    parser.add_argument("--entr-x1", type=int, default=56)
+    parser.add_argument("--entr-w", type=int, default=4)
+    parser.add_argument("--entr-y1", type=int, default=40)
+    parser.add_argument("--entr-len", type=int, default=10)
     parser.add_argument("--threads", type=int, default=1)
-    parser.add_argument("--time-limit", type=float, default=0.0)
+    parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--time-limit", type=float, default=1.0)
+    parser.add_argument("--max-cut-rounds", type=int, default=10)
+    parser.add_argument(
+        "--progress",
+        choices=["auto", "json", "off"],
+        default="auto",
+    )
+    parser.add_argument("--progress-interval", type=float, default=1.0)
+    parser.add_argument("--checkpoint", type=float, default=0.0)
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--version", action="version", version=__version__)
+    return parser
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    """Run the command-line interface."""
+    parser = _build_parser()
     args = parser.parse_args(argv)
 
-    configure_logging(args.log_level, args.log_format, args.log_file)
-    logger = logging.getLogger(__name__)
-    start_time = time.time()
-
-    logger.info("phase=%s", "start")
+    prog: Optional[Progress] = None
+    if args.progress != "off":
+        fmt = "text" if args.progress == "auto" else "json"
+        prog = Progress(fmt=fmt, interval=args.progress_interval)
+        prog.heartbeat("start")
 
     if args.validate_only:
         solution = json.loads(Path(args.config).read_text(encoding="utf8"))
         report = validate(solution)
         Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
+        if prog:
+            prog.heartbeat("validate")
+            prog.done()
         return 0
 
     room_defs = load_room_defs(args.config)
-    if args.progress != "off":
-        logger.info("phase=%s", "parse")
-        time.sleep(args.progress_interval)
-    params = SolveParams()
+    if prog:
+        prog.heartbeat("parse")
+
+    params = SolveParams(
+        grid_w=args.grid_w,
+        grid_h=args.grid_h,
+        entrance_x=args.entr_x1,
+        entrance_w=args.entr_w,
+        entrance_y=args.entr_y1,
+        entrance_h=args.entr_len,
+    )
+    params.max_cut_rounds = args.max_cut_rounds
+    params.time_limit = args.time_limit
+    params.seed = args.seed
+    params.threads = args.threads
+
     solution = solve(room_defs, params)
     Path(args.out_json).write_text(json.dumps(solution, indent=2), encoding="utf8")
-    if args.progress != "off":
-        logger.info("phase=%s", "solve")
-        time.sleep(args.progress_interval)
+    if prog:
+        prog.heartbeat("solve")
+
     report = validate(solution)
     Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
-    if args.progress != "off":
-        logger.info("phase=%s", "validate")
-        time.sleep(args.progress_interval)
-    render(solution, args.out_png)
-    if args.progress != "off":
-        logger.info("phase=%s", "render")
-        time.sleep(args.progress_interval)
+    if prog:
+        prog.heartbeat("validate")
 
-    duration = time.time() - start_time
-    logger.info("phase=%s runtime_sec=%.3f", "finish", duration)
+    render(solution, args.out_png)
+    if prog:
+        prog.heartbeat("render")
+        prog.done()
     return 0
 
 

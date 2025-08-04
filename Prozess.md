@@ -55,9 +55,9 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 9. Pro Raum mindestens eine Tür zum Gang anlegen (Quelle: README.md#73-84; README-SPEC.md#25) – ✔ erledigt
 10. Zielfunktion zur Maximierung der Raumfläche definieren (Quelle: README-SPEC.md#11) – ✔ erledigt
 11. Solver starten und bei Abbruch beste Lösung sichern (Quelle: README-SPEC.md#28) – ✔ erledigt
-12. `solution.json` generieren (Quelle: README-SPEC.md#44-52) – ✖ offen
+12. `solution.json` generieren (Quelle: README-SPEC.md#44-52) – ✔ erledigt
 13. `solution.png` rendern (Quelle: README-SPEC.md#55) – ✔ erledigt
-14. `validation_report.json` schreiben (Quelle: README-SPEC.md#57-81) – ✖ offen
+14. `validation_report.json` schreiben (Quelle: README-SPEC.md#57-81) – ✔ erledigt
 15. CLI‑Schalter implementieren (`--log-level`, `--log-format`, `--log-file`, `--progress`, `--progress-interval`, `--seed`, `--time-limit`, `--threads`) (Quelle: README.md#409-416) – ✔ erledigt
 16. Strukturierte Logs und Progress-Anzeige entwickeln (Quelle: README.md#418-439; README-SPEC.md#83-91) – ✖ offen
 17. Sauberen Abbruch und optionale Checkpoints unterstützen (Quelle: README.md#447-450; README-SPEC.md#91) – ✖ offen
@@ -72,14 +72,16 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - Eingang `x1=56`, `x2=60`, `y1=40`, `y2=50` (Quelle: README.md#41-45)
 - Korridorfenster `corridor_win=4` (Quelle: Benutzeranweisung)
 - Iterative Cuts `max_cut_rounds=10` (Quelle: Benutzeranweisung)
-- CLI: `--log-level {DEBUG,INFO,WARN,ERROR}` (Quelle: README.md#411)
-- CLI: `--log-format {text,json}` (Quelle: README.md#412)
-- CLI: `--log-file <pfad>` (Quelle: README.md#413)
-- CLI: `--progress {auto,off}` (Quelle: README.md#414)
-- CLI: `--progress-interval <sek>` (Quelle: README.md#415)
+- CLI: `--grid-w <int>`, `--grid-h <int>` (Quelle: Benutzeranweisung)
+- CLI: `--entr-x1 <int>`, `--entr-w <int>`, `--entr-y1 <int>`, `--entr-len <int>` (Quelle: Benutzeranweisung)
+- CLI: `--threads <n>` (Quelle: README.md#416)
 - CLI: `--seed <int>` (Quelle: README.md#416)
 - CLI: `--time-limit <sek>` (Quelle: README.md#416)
-- CLI: `--threads <n>` (Quelle: README.md#416)
+- CLI: `--max-cut-rounds <n>` (Quelle: Benutzeranweisung)
+- CLI: `--progress {auto,json,off}` (Quelle: README.md#414)
+- CLI: `--progress-interval <sek>` (Quelle: README.md#415)
+- CLI: `--checkpoint <sek>` (Quelle: README.md#447-450)
+- CLI: `--validate-only` (Quelle: Benutzeranweisung)
 - Ausgaben: `solution.json`, `solution.png`, `validation_report.json` (Quelle: AGENTS.md#14)
 
 ## Status
@@ -104,3 +106,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-04T00:12:49Z – Visualisierung mit Raster, Farben und Türen ergänzt
 - 2025-08-04T00:24:03Z – Validator um 4×4-Gangprüfung und Türvalidierung erweitert
 - 2025-08-05T00:00:00Z – CP-SAT-Solver mit Tür- und Konnektivitäts-Cuts implementiert
+- 2025-08-06T00:00:00Z – CLI um Grid- und Eingang-Parameter sowie Validierungsmodus erweitert

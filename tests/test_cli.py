@@ -12,6 +12,7 @@ from wands import __version__
 
 
 def test_cli_creates_output(tmp_path: Path) -> None:
+    """CLI should produce solution, PNG and validation report."""
     out_json = tmp_path / "solution.json"
     out_png = tmp_path / "solution.png"
     out_report = tmp_path / "report.json"
@@ -38,7 +39,51 @@ def test_cli_creates_output(tmp_path: Path) -> None:
     assert data["entrance"]["x1"] == 56
 
 
+def test_cli_validate_only(tmp_path: Path) -> None:
+    """CLI validates an existing solution without solving."""
+    solution = tmp_path / "solution.json"
+    png = tmp_path / "solution.png"
+    report = tmp_path / "report.json"
+    cmd = [
+        "python",
+        "-m",
+        "wands.cli",
+        "--config",
+        "rooms.yaml",
+        "--out-json",
+        str(solution),
+        "--out-png",
+        str(png),
+        "--validate",
+        str(report),
+        "--progress",
+        "off",
+    ]
+    subprocess.run(cmd, check=True)
+
+    report2 = tmp_path / "report2.json"
+    cmd2 = [
+        "python",
+        "-m",
+        "wands.cli",
+        "--config",
+        str(solution),
+        "--out-json",
+        str(tmp_path / "unused.json"),
+        "--out-png",
+        str(tmp_path / "unused.png"),
+        "--validate",
+        str(report2),
+        "--progress",
+        "off",
+        "--validate-only",
+    ]
+    subprocess.run(cmd2, check=True)
+    assert report2.exists(), "validation report not created"
+
+
 def test_start_process_version() -> None:
+    """start_process.py should expose the package version."""
     result = subprocess.run(
         [sys.executable, "start_process.py", "--version"],
         capture_output=True,

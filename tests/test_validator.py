@@ -1,7 +1,10 @@
+"""Tests for the validator module."""
+
 from wands.validator import validate
 
 
 def test_validate_empty_solution_valid() -> None:
+    """Empty solution should pass all checks."""
     solution = {
         "rooms": [],
         "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
@@ -19,6 +22,7 @@ def test_validate_empty_solution_valid() -> None:
 
 
 def test_validate_overlap_fail() -> None:
+    """Overlapping rooms must fail the overlap check."""
     room_a = {
         "id": "a",
         "type": "A",
@@ -46,6 +50,7 @@ def test_validate_overlap_fail() -> None:
 
 
 def test_validate_corridor_width_fail() -> None:
+    """Corridor width below threshold should fail validation."""
     room = {
         "id": "r",
         "type": "T",
