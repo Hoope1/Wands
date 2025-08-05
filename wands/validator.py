@@ -189,7 +189,7 @@ def _check_doors(
 
 
 def validate(
-    solution: Dict, require_no_outside_doors: bool = False
+    solution: Dict, require_no_outside_doors: bool = True
 ) -> Dict[str, Dict[str, object]]:
     """Validate ``solution`` and return a structured report."""
     grid, flags = build_grid(solution)

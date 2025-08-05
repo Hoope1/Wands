@@ -24,7 +24,7 @@ weitergereicht.
 - Eingang: Block **x=56..59**, **y=40..49** (4×10) gehört immer zum Gang.
 - Gang: Komplement aller Räume, **Breite ≥4** nach L∞ (**4×4-Fenster** vollständig Gang).
 - Konnektivität: genau **eine Gangkomponente** in **4-Nachbarschaft** inklusive Eingang.
-- Türen: liegen auf einer **Raumwand**, **nicht in Ecken**, öffnen in den Gang und sind vom Eingang aus erreichbar.
+- Türen: liegen auf einer **Raumwand**, **nicht in Ecken**, öffnen in den Gang, sind vom Eingang aus erreichbar und dürfen **nicht am Außenrand** liegen (außer am Eingang).
 - Räume: **rechteckig**, **wand-an-wand** erlaubt, **keine Überlappung**, vollständig im 77×50‑Grid.
 - Primäres Ziel: **Maximiere die Gesamtfläche aller Räume**.
 - Ausgaben: `solution.json`, `solution.png`, `validation_report.json`.
@@ -524,3 +524,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-11: Codeformatierung und Lintingfehler bereinigt.
 * 2025-08-13: CP-SAT-Solver setzt Seed- und Thread-Parameter.
 * 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
+* 2025-08-15: Validator verbietet Außentüren standardmäßig, CLI-Option zum Zulassen hinzugefügt.

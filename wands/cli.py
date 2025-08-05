@@ -61,6 +61,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--progress-interval", type=float, default=1.0)
     parser.add_argument("--checkpoint", type=float, default=0.0)
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument(
+        "--allow-outside-doors",
+        action="store_true",
+        help="Allow doors at the exterior grid boundary.",
+    )
     parser.add_argument("--version", action="version", version=__version__)
     return parser
 
@@ -94,7 +99,9 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     if args.validate_only:
         solution = json.loads(Path(args.config).read_text(encoding="utf8"))
-        report = validate(solution)
+        report = validate(
+            solution, require_no_outside_doors=not args.allow_outside_doors
+        )
         Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
         if prog:
             prog.heartbeat("validate")
@@ -133,7 +140,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if now - last_checkpoint < args.checkpoint:
             return
         Path(args.out_json).write_text(json.dumps(sol, indent=2), encoding="utf8")
-        report = validate(sol)
+        report = validate(sol, require_no_outside_doors=not args.allow_outside_doors)
         Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
         render(sol, args.out_png)
         last_checkpoint = now
@@ -167,7 +174,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     if prog:
         prog.heartbeat("solve")
 
-    report = validate(solution)
+    report = validate(solution, require_no_outside_doors=not args.allow_outside_doors)
     Path(args.report).write_text(json.dumps(report, indent=2), encoding="utf8")
     if prog:
         prog.heartbeat("validate")
