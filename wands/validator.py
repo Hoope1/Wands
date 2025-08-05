@@ -189,9 +189,17 @@ def _check_doors(
 
 
 def validate(
-    solution: Dict, require_no_outside_doors: bool = False
+    solution: Dict, require_no_outside_doors: bool = True
 ) -> Dict[str, Dict[str, object]]:
-    """Validate ``solution`` and return a structured report."""
+    """Validate ``solution`` and return a structured report.
+
+    Parameters
+    ----------
+    solution:
+        Lösung, die geprüft werden soll.
+    require_no_outside_doors:
+        Wenn ``True`` (Standard), dürfen Türen nicht direkt ins Freie führen.
+    """
     grid, flags = build_grid(solution)
 
     corridor_cells = [

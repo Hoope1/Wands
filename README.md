@@ -24,7 +24,7 @@ weitergereicht.
 - Eingang: Block **x=56..59**, **y=40..49** (4×10) gehört immer zum Gang.
 - Gang: Komplement aller Räume, **Breite ≥4** nach L∞ (**4×4-Fenster** vollständig Gang).
 - Konnektivität: genau **eine Gangkomponente** in **4-Nachbarschaft** inklusive Eingang.
-- Türen: liegen auf einer **Raumwand**, **nicht in Ecken**, öffnen in den Gang und sind vom Eingang aus erreichbar.
+- Türen: liegen auf einer **Raumwand**, **nicht in Ecken**, öffnen in den Gang, sind vom Eingang aus erreichbar und liegen **nicht am Außenrand** (außer am Eingang).
 - Räume: **rechteckig**, **wand-an-wand** erlaubt, **keine Überlappung**, vollständig im 77×50‑Grid.
 - Primäres Ziel: **Maximiere die Gesamtfläche aller Räume**.
 - Ausgaben: `solution.json`, `solution.png`, `validation_report.json`.
@@ -102,6 +102,7 @@ Die konkrete **Algorithmik** (Exact/CP-SAT/ILP/Flow/Graph/Heuristik) ist **frei*
 * **Nicht in Ecken:** Tür darf **nicht** den Schnittpunkt zweier Wände (Ecke) belegen.
 * **Tür → Gang:** Direkt „außerhalb“ dieses Wandsegments muss eine **Gangzelle** liegen (also die Tür öffnet **in den Gang**, nicht in einen Raum).
 * **Keine Raum-Durchreiche:** Es ist **verboten**, durch Räume zu gehen, um einen anderen Raum zu erreichen. Alle Erreichbarkeit verläuft **ausschließlich** über Gangzellen.
+* **Keine Außentüren:** Türen dürfen **nicht** direkt am Außenrand liegen – einzig der feste Eingang bildet die Ausnahme.
 
 **Formale Skizze (Türprüfung, exemplarisch):**
 
@@ -442,6 +443,7 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * `--progress-interval <sek>` (Default: `1`) – Mindestabstand zwischen Status-Updates
 * `--checkpoint <sek>` (optional) – speichert periodisch Zwischenstände
 * `--seed <int>` (Reproduzierbarkeit), `--time-limit <sek>` (optional), `--threads <n>` (optional)
+* `--allow-outside-doors` – erlaubt Türen am Außenrand (standardmäßig verboten)
 
 ### 16.2 Strukturierte Logs (Maschinen- & menschenlesbar)
 
@@ -525,3 +527,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-13: CP-SAT-Solver setzt Seed- und Thread-Parameter.
 * 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
 * 2025-08-15: Türheuristik wählt anhand von Scoring bessere Türpositionen.
+* 2025-08-16: Validator verbietet standardmäßig Außentüren; CLI-Schalter `--allow-outside-doors` hinzugefügt.
