@@ -68,6 +68,10 @@ class SolveParams:
     corridor_win: int = 4
     max_iters: int = 1000
     log_every: int = 100
+    max_cut_rounds: int = 10
+    time_limit: int | None = None
+    seed: int | None = None
+    threads: int | None = None
 
     def entrance_bounds(self) -> tuple[int, int, int, int]:
         """Return entrance bounds as ``(x1, x2, y1, y2)``."""

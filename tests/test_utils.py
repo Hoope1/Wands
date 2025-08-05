@@ -1,4 +1,5 @@
 """Tests for grid utility functions."""
+
 from __future__ import annotations
 
 from wands.utils import iter_window_cells, neighbors4, windows_covering_cell

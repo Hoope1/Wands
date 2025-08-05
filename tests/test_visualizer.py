@@ -1,6 +1,7 @@
 """Tests for the visualizer module."""
 
 from pathlib import Path
+from typing import cast
 
 from PIL import Image
 
@@ -29,4 +30,6 @@ def test_render_creates_image(tmp_path: Path) -> None:
     render(solution, out)
     assert out.exists()
     img = Image.open(out)
-    assert img.size == (solution["grid_w"] * 10, solution["grid_h"] * 10)
+    grid_w = cast(int, solution["grid_w"])
+    grid_h = cast(int, solution["grid_h"])
+    assert img.size == (grid_w * 10, grid_h * 10)

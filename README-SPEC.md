@@ -2,6 +2,9 @@ Lösungsansatz für optimale Raumverteilung (77×50 Gitter, Python)
 
  Abbildung 1: 77×50-Raster mit festem Eingangsbereich (4×10 Zellen, Lage x=56..59, y=40..49). Dieser Bereich ist stets Teil des Gangs.
 
+Hinweis: Die Prüfroutine in `AGENTS_Pruefung.md` ist nach jeder Änderung vollständig auszuführen und bei Fehlern zu wiederholen.
+
+
 Algorithmus-Design und Modellierung
 
 Um die maximale Gesamt-Raumfläche zu erzielen und alle harten Regeln einzuhalten, wird ein exakter Optimierungsansatz gewählt. Trotz hoher Komplexität ermöglicht moderne Solver-Technologie (z. B. OR-Tools CP-SAT) auch bei NP-schweren Problemen praktikable Lösungen. Das Problem wird als ganzzahliges Optimierungsmodell formuliert, in dem Räume als platzierbare Rechtecke modelliert werden und der Gang das verbleibende Komplement bildet. Wichtigste Elemente des Modells sind Variablen für Raumpositionen/-größen, Binärvariablen für Zuordnungen (z. B. ob zwei Räume nebeneinander liegen) und Hilfsvariablen für Gang-Konnektivität und Türplatzierungen.

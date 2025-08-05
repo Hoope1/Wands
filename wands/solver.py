@@ -11,9 +11,9 @@ maximum number of cut rounds is reached.
 
 from __future__ import annotations
 
-from collections import deque
 import resource
-from typing import Callable, List, Sequence
+from collections import deque
+from typing import Callable, List, Sequence, cast
 
 from ortools.sat.python import cp_model
 
@@ -138,10 +138,10 @@ def _build_model(
     win = params.corridor_win
     win_full: dict[tuple[int, int], cp_model.IntVar] = {}
     for a in range(0, gw - win + 1):
-        for b in range(0, gh - win + 1):
-            wv = model.new_bool_var(f"win_{a}_{b}")
-            win_full[(a, b)] = wv
-            for (i, j) in iter_window_cells(a, b, win):
+        for b_idx in range(0, gh - win + 1):
+            wv = model.new_bool_var(f"win_{a}_{b_idx}")
+            win_full[(a, b_idx)] = cast(cp_model.IntVar, wv)
+            for i, j in iter_window_cells(a, b_idx, win):
                 model.add(corr_cell[i][j] >= wv)
 
     for i in range(gw):
@@ -316,9 +316,8 @@ def solve(
                 room_defs, params, door_cuts, island_cuts
             )
             solver = cp_model.CpSolver()
-            solver.parameters.max_time_in_seconds = getattr(
-                params, "time_limit", 1.0
-            )
+            time_limit = getattr(params, "time_limit", 1.0)
+            solver.parameters.max_time_in_seconds = float(time_limit or 1.0)
             status = solver.solve(model)
             if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
                 return {
@@ -377,4 +376,3 @@ def solve(
     if last_solution is None:
         raise RuntimeError("CP-SAT solver failed to find a solution")
     return last_solution
-

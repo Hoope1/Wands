@@ -1,7 +1,7 @@
 """Render a solution grid using Pillow.
 
-The visualizer draws a light grid, colors rooms by group and marks doors as
-short black wall segments. The entrance area is filled in dark gray.
+The visualizer draws a light grid, colors rooms by group and marks doors as short black
+wall segments. The entrance area is filled in dark gray.
 """
 
 from __future__ import annotations
