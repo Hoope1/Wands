@@ -142,3 +142,23 @@ def test_validate_missing_door_fail() -> None:
     }
     report = validate(solution)
     assert report["doors"]["pass"] is False
+
+
+def test_validate_outside_door_fail() -> None:
+    """Doors directly at the outer boundary should fail by default."""
+    room = {
+        "id": "r",
+        "type": "T",
+        "x": 1,
+        "y": 10,
+        "w": 6,
+        "h": 6,
+        "doors": [{"side": "left", "pos_x": 1, "pos_y": 12}],
+    }
+    solution = {
+        "rooms": [room],
+        "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
+    }
+    report = validate(solution)
+    assert report["doors"]["pass"] is False
+    assert "Außenrand" in str(report["doors"]["info"])

@@ -82,6 +82,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 32. CP-SAT-Solver setzt Seed- und Threads-Parameter – ✔ erledigt
 33. Solver verbindet Korridorinseln über Pfad-Cut – ✔ erledigt
 34. Türheuristik mit Scoring für Türpositionen verbessern – ✔ erledigt
+35. Validator verbietet Außentüren standardmäßig, CLI-Schalter zum Zulassen – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -100,6 +101,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - CLI: `--validate-only` (Quelle: Benutzeranweisung)
 - Ausgaben: `solution.json`, `solution.png`, `validation_report.json` (Quelle: AGENTS.md#14)
  - CLI: `--log-level`, `--log-format`, `--log-file` (Quelle: README.md#409-416)
+- CLI: `--allow-outside-doors` (Außentüren erlauben)
 
 ## Status
 | Aufgabe                                     | Status | Letzte Änderung        | Verantwortlich |
@@ -122,6 +124,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Solver nutzt Seed- und Thread-Parameter | ✔     | 2025-08-13T00:00:00Z   | Agent          |
 | Korridorinseln über Pfad-Cut verbinden | ✔     | 2025-08-14T00:00:00Z   | Agent          |
 | Türheuristik mit Scoring für Türpositionen verbessern | ✔     | 2025-08-15T00:00:00Z   | Agent          |
+| Außentüren standardmäßig verbieten, CLI-Schalter anbieten | ✔     | 2025-08-16T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -149,3 +152,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-13T00:00:00Z – Solver setzt Seed- und Thread-Parameter
 - 2025-08-14T00:00:00Z – Solver verbindet Korridorinseln über Pfad-Cut
 - 2025-08-15T00:00:00Z – Türheuristik priorisiert breite Korridore bei Türwahl
+- 2025-08-16T00:00:00Z – Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt
