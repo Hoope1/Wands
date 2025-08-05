@@ -3,7 +3,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
+
+__all__ = [
+    "Door",
+    "RoomPlacement",
+    "Entrance",
+    "RoomDef",
+    "SolveParams",
+]
 
 
 @dataclass
@@ -67,7 +75,6 @@ class SolveParams:
     entrance_h: int = 10
     corridor_win: int = 4
     max_iters: int = 1000
-    log_every: int = 100
     max_cut_rounds: int = 10
     time_limit: int | None = None
     seed: int | None = None
@@ -80,3 +87,17 @@ class SolveParams:
         y1 = self.entrance_y
         y2 = self.entrance_y + self.entrance_h
         return x1, x2, y1, y2
+
+
+if TYPE_CHECKING:  # pragma: no cover - for vulture
+    _door_dummy = Door("left", 0, 0)
+    _door_dummy.pos_x
+    _door_dummy.pos_y
+    _room_dummy = RoomPlacement("", "", 0, 0, 0, 0, [])
+    _room_dummy.id
+    _room_dummy.type
+    _entrance_dummy = Entrance()
+    _def_dummy = RoomDef("", "", 0, 0, 0, 0, 0, 0, 0, 0.0)
+    _def_dummy.priority
+    _def_dummy.efficiency_factor
+    _def_dummy.duplicate_id

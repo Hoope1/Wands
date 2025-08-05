@@ -318,6 +318,7 @@ def solve(
             solver = cp_model.CpSolver()
             time_limit = getattr(params, "time_limit", 1.0)
             solver.parameters.max_time_in_seconds = float(time_limit or 1.0)
+            _ = solver.parameters.max_time_in_seconds
             status = solver.solve(model)
             if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
                 return {

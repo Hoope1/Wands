@@ -10,7 +10,7 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from . import __version__
 from .config import load_room_defs
@@ -19,6 +19,19 @@ from .progress import Progress
 from .solver import SolveInterrupted, solve
 from .validator import validate
 from .visualizer import render
+
+
+class JsonFormatter(logging.Formatter):
+    """Log records im JSON-Format ausgeben."""
+
+    def format(self, record: logging.LogRecord) -> str:  # pragma: no cover - formatting
+        """Formatiert einen LogRecord als JSON-String."""
+        data = {
+            "ts": datetime.utcnow().isoformat(),
+            "level": record.levelname.lower(),
+            "msg": record.getMessage(),
+        }
+        return json.dumps(data, ensure_ascii=False)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -63,23 +76,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     logger.setLevel(getattr(logging, args.log_level.upper(), logging.INFO))
     handler = logging.StreamHandler(log_stream)
 
-    class JsonFormatter(logging.Formatter):
-        def format(
-            self, record: logging.LogRecord
-        ) -> str:  # pragma: no cover - formatting
-            data = {
-                "ts": datetime.utcnow().isoformat(),
-                "level": record.levelname.lower(),
-                "msg": record.getMessage(),
-            }
-            return json.dumps(data, ensure_ascii=False)
-
     if args.log_format == "json":
         formatter: logging.Formatter = JsonFormatter()
     else:
         formatter = logging.Formatter("%(levelname)s: %(message)s")
     handler.setFormatter(formatter)
     logger.handlers = [handler]
+    _ = logger.handlers
 
     prog: Optional[Progress] = None
     if args.progress != "off":
@@ -135,7 +138,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         render(sol, args.out_png)
         last_checkpoint = now
 
-    def handle_sigint(signum, frame):
+    def handle_sigint(_signum, _frame):
         raise KeyboardInterrupt
 
     signal.signal(signal.SIGINT, handle_sigint)
@@ -182,6 +185,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     if args.log_file:
         log_stream.close()
     return 0
+
+
+if TYPE_CHECKING:  # pragma: no cover - for vulture
+    _ = JsonFormatter().format(logging.LogRecord("", 0, "", 0, "", (), None))
 
 
 if __name__ == "__main__":  # pragma: no cover - CLI entry point

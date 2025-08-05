@@ -521,3 +521,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-08: Validator auf diagonale Engstellen/Türengpässe erweitert, Fortschrittsstatistiken ergänzt.
 * 2025-08-09: requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt.
 * 2025-08-10: GUIDE.md mit Anleitung für Google Colab hinzugefügt.
+* 2025-08-11: Codeformatierung und Lintingfehler bereinigt.
