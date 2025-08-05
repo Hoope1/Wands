@@ -158,3 +158,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-15T00:00:00Z – Türheuristik priorisiert breite Korridore bei Türwahl
 - 2025-08-16T00:00:00Z – Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt
 - 2025-08-17T00:00:00Z – Lösung ergänzt `grid_w`/`grid_h`, CLI entfernt Rasterparameter
+- 2025-08-18T00:00:00Z – Tooling-Abhängigkeiten docformatter, pydocstyle und types-PyYAML ergänzt
