@@ -57,3 +57,4 @@ Keine
 - 2025-08-11: AGENTS_Pruefung.md mit Prüfroutine hinzugefügt.
 - 2025-08-13: Solver setzt Seed- und Thread-Parameter.
 - 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
+- 2025-08-15: Validator verbietet Außentüren standardmäßig; CLI-Option erlaubt Außentüren.
