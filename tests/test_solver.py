@@ -52,3 +52,31 @@ def test_solve_without_resource(monkeypatch) -> None:
     progress = Progress(interval=0)
     result = solver.solve([], params, progress=progress)
     assert result["rooms"] == []
+
+
+def test_solver_sets_seed_and_threads(monkeypatch) -> None:
+    """Solver should forward seed and thread parameters to OR-Tools."""
+    params = SolveParams(
+        grid_w=6,
+        grid_h=6,
+        entrance_x=0,
+        entrance_w=1,
+        entrance_y=0,
+        entrance_h=1,
+        corridor_win=1,
+        max_iters=2,
+        seed=123,
+        threads=2,
+    )
+    recorded: dict[str, int] = {}
+
+    class CapturingSolver(solver.cp_model.CpSolver):  # type: ignore[misc]
+        def solve(self, model):  # type: ignore[override]
+            recorded["seed"] = self.parameters.random_seed
+            recorded["threads"] = self.parameters.num_search_workers
+            return super().solve(model)
+
+    monkeypatch.setattr(solver.cp_model, "CpSolver", CapturingSolver)
+    solver.solve([], params)
+    assert recorded["seed"] == 123
+    assert recorded["threads"] == 2
