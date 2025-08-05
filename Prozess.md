@@ -83,6 +83,8 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 33. Solver verbindet Korridorinseln über Pfad-Cut – ✔ erledigt
 34. Türheuristik mit Scoring für Türpositionen verbessern – ✔ erledigt
 35. Validator verbietet Außentüren standardmäßig, CLI-Schalter zum Zulassen – ✔ erledigt
+36. Lösung enthält Grid-Konstanten `grid_w`/`grid_h` – ✔ erledigt
+37. CLI ohne Raster- und Eingang-Parameter betreiben – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -125,6 +127,8 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Korridorinseln über Pfad-Cut verbinden | ✔     | 2025-08-14T00:00:00Z   | Agent          |
 | Türheuristik mit Scoring für Türpositionen verbessern | ✔     | 2025-08-15T00:00:00Z   | Agent          |
 | Außentüren standardmäßig verbieten, CLI-Schalter anbieten | ✔     | 2025-08-16T00:00:00Z   | Agent          |
+| Lösung schreibt Grid-Konstanten | ✔     | 2025-08-17T00:00:00Z   | Agent          |
+| CLI ohne Raster-/Eingangs-Parameter | ✔     | 2025-08-17T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -153,3 +157,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-14T00:00:00Z – Solver verbindet Korridorinseln über Pfad-Cut
 - 2025-08-15T00:00:00Z – Türheuristik priorisiert breite Korridore bei Türwahl
 - 2025-08-16T00:00:00Z – Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt
+- 2025-08-17T00:00:00Z – Lösung ergänzt `grid_w`/`grid_h`, CLI entfernt Rasterparameter

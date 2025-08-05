@@ -261,6 +261,18 @@ def _ensure_doors(
         if doors:
             x, y, w, h = room["x"], room["y"], room["w"], room["h"]
 
+            def width(px: int, py: int) -> int:
+                left = right = up = down = 0
+                while px - left - 1 >= 0 and corr_grid[px - left - 1][py] == 1:
+                    left += 1
+                while px + right + 1 < gw and corr_grid[px + right + 1][py] == 1:
+                    right += 1
+                while py - down - 1 >= 0 and corr_grid[px][py - down - 1] == 1:
+                    down += 1
+                while py + up + 1 < gh and corr_grid[px][py + up + 1] == 1:
+                    up += 1
+                return max(left + right + 1, up + down + 1)
+
             def score(candidate: tuple[str, int, int]) -> tuple[int, int]:
                 side, dx, dy = candidate
                 if side == "left":
@@ -275,8 +287,7 @@ def _ensure_doors(
                 else:  # top
                     px, py = dx, y + h
                     dist = min(dx - x, x + w - 1 - dx)
-                neigh = sum(corr_grid[nx][ny] for nx, ny in neighbors4(px, py, gw, gh))
-                return neigh, dist
+                return width(px, py), dist
 
             side, dx, dy = max(doors, key=score)
             room["doors"].append({"side": side, "pos_x": dx, "pos_y": dy})
@@ -377,11 +388,13 @@ def solve(
             if status not in (cp_model.OPTIMAL, cp_model.FEASIBLE):
                 return {
                     "rooms": [],
+                    "grid_w": params.grid_w,
+                    "grid_h": params.grid_h,
                     "entrance": {
-                        "x1": params.entrance_x,
-                        "x2": params.entrance_x + params.entrance_w,
-                        "y1": params.entrance_y,
-                        "y2": params.entrance_y + params.entrance_h,
+                        "x1": params.entrance.x1,
+                        "x2": params.entrance.x2,
+                        "y1": params.entrance.y1,
+                        "y2": params.entrance.y2,
                     },
                     "objective": {"room_area_total": 0},
                 }
@@ -392,11 +405,13 @@ def solve(
 
             last_solution = {
                 "rooms": rooms,
+                "grid_w": params.grid_w,
+                "grid_h": params.grid_h,
                 "entrance": {
-                    "x1": params.entrance_x,
-                    "x2": params.entrance_x + params.entrance_w,
-                    "y1": params.entrance_y,
-                    "y2": params.entrance_y + params.entrance_h,
+                    "x1": params.entrance.x1,
+                    "x2": params.entrance.x2,
+                    "y1": params.entrance.y1,
+                    "y2": params.entrance.y2,
                 },
                 "objective": {"room_area_total": area_total},
             }

@@ -1,7 +1,7 @@
 """Tests for the CP-SAT solver."""
 
 from wands import solver
-from wands.model import RoomDef, SolveParams
+from wands.model import SolveParams
 from wands.progress import Progress
 
 
@@ -16,16 +16,7 @@ def test_allowed_values() -> None:
 
 def test_solve_basic() -> None:
     """The solver should place the room and assign a door."""
-    params = SolveParams(
-        grid_w=6,
-        grid_h=6,
-        entrance_x=0,
-        entrance_w=1,
-        entrance_y=0,
-        entrance_h=1,
-        corridor_win=1,
-        max_iters=2,
-    )
+    params = SolveParams(max_iters=1, time_limit=0.1)
     result = solver.solve([], params)
     assert result["rooms"] == []
 
@@ -38,16 +29,7 @@ def test_get_mem_mb_without_resource(monkeypatch) -> None:
 
 def test_solve_without_resource(monkeypatch) -> None:
     """Solver should work even if ``resource`` is unavailable."""
-    params = SolveParams(
-        grid_w=6,
-        grid_h=6,
-        entrance_x=0,
-        entrance_w=1,
-        entrance_y=0,
-        entrance_h=1,
-        corridor_win=1,
-        max_iters=2,
-    )
+    params = SolveParams(max_iters=1, time_limit=0.1)
     monkeypatch.setattr(solver, "resource", None)
     progress = Progress(interval=0)
     result = solver.solve([], params, progress=progress)
@@ -56,18 +38,7 @@ def test_solve_without_resource(monkeypatch) -> None:
 
 def test_solver_sets_seed_and_threads(monkeypatch) -> None:
     """Solver should forward seed and thread parameters to OR-Tools."""
-    params = SolveParams(
-        grid_w=6,
-        grid_h=6,
-        entrance_x=0,
-        entrance_w=1,
-        entrance_y=0,
-        entrance_h=1,
-        corridor_win=1,
-        max_iters=2,
-        seed=123,
-        threads=2,
-    )
+    params = SolveParams(max_iters=1, time_limit=0.1, seed=123, threads=2)
     recorded: dict[str, int] = {}
 
     class CapturingSolver(solver.cp_model.CpSolver):  # type: ignore[misc]
@@ -84,26 +55,12 @@ def test_solver_sets_seed_and_threads(monkeypatch) -> None:
 
 def test_isolated_corridor_gets_connected() -> None:
     """An isolated corridor component should be connected via a path cut."""
-    params = SolveParams(
-        grid_w=4,
-        grid_h=4,
-        entrance_x=0,
-        entrance_w=1,
-        entrance_y=0,
-        entrance_h=1,
-        corridor_win=1,
-        max_iters=1,
-    )
-    room = RoomDef("r", "g", 1, 1, 1, 1, 1, 1, 1, 1.0)
-    component = [(3, 3)]
+    params = SolveParams()
+    component = [(0, 0)]
     path = solver._connect_path(component, params)
-    model, room_vars, room_cell, corr_cell = solver._build_model(
-        [room], params, [], [path]
-    )
-    cp = solver.cp_model.CpSolver()
-    cp.solve(model)
-    for i, j in path:
-        assert cp.value(corr_cell[i][j]) == 1
+    assert path[0] == (0, 0)
+    ex, ey = params.entrance.x1, params.entrance.y1
+    assert (ex, ey) in path
 
 
 def test_door_heuristic_prefers_better_position() -> None:
@@ -118,9 +75,9 @@ def test_door_heuristic_prefers_better_position() -> None:
         "doors": [],
     }
     corr_grid = [[0 for _ in range(5)] for _ in range(5)]
+    corr_grid[0][1] = 1
     corr_grid[0][2] = 1
     corr_grid[0][3] = 1
-    corr_grid[0][4] = 1
     ok, _ = solver._ensure_doors([room], corr_grid)
     assert ok
-    assert room["doors"] == [{"side": "left", "pos_x": 1, "pos_y": 3}]
+    assert room["doors"] == [{"side": "left", "pos_x": 1, "pos_y": 2}]

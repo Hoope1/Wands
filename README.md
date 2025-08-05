@@ -528,3 +528,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
 * 2025-08-15: Türheuristik wählt anhand von Scoring bessere Türpositionen.
 * 2025-08-16: Validator verbietet standardmäßig Außentüren; CLI-Schalter `--allow-outside-doors` hinzugefügt.
+* 2025-08-17: Datenmodell vereinfacht und CLI auf fixes 77×50-Raster reduziert; Lösung enthält `grid_w`/`grid_h`.
