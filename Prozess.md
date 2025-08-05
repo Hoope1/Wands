@@ -79,6 +79,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 29. Prüfroutine `AGENTS_Pruefung.md` hinzufügen – ✔ erledigt
 30. Datenklassen in `model.py` vervollständigen – ✔ erledigt
 31. Speicherlogging ohne `resource` ermöglichen – ✔ erledigt
+32. CP-SAT-Solver setzt Seed- und Threads-Parameter – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -116,6 +117,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Dokumentation für Google-Colab-Nutzung schreiben | ✔     | 2025-08-10T02:00:00Z   | Agent          |
 | Datenklassen in model.py vervollständigen | ✔     | 2025-08-12T00:00:00Z   | Agent          |
 | Speicherlogging ohne resource ermöglichen | ✔     | 2025-08-12T00:00:00Z   | Agent          |
+| Solver nutzt Seed- und Thread-Parameter | ✔     | 2025-08-13T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -140,3 +142,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-11T01:00:00Z – Prüfroutine in AGENTS_Pruefung.md vervollständigt
 - 2025-08-11T02:00:00Z – Codeformatierung und Lintingfehler bereinigt
 - 2025-08-12T00:00:00Z – Datenklassen in model.py vervollständigt und Speicherlogging ohne resource implementiert
+- 2025-08-13T00:00:00Z – Solver setzt Seed- und Thread-Parameter

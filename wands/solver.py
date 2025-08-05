@@ -326,6 +326,10 @@ def solve(
                 room_defs, params, door_cuts, island_cuts
             )
             solver = cp_model.CpSolver()
+            if params.seed is not None:
+                solver.parameters.random_seed = int(params.seed)
+            if params.threads:
+                solver.parameters.num_search_workers = int(params.threads)
             time_limit = getattr(params, "time_limit", 1.0)
             solver.parameters.max_time_in_seconds = float(time_limit or 1.0)
             _ = solver.parameters.max_time_in_seconds

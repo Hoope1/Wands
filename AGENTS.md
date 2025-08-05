@@ -55,3 +55,4 @@ Keine
 - 2025-08-09: requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt.
 - 2025-08-10: GUIDE.md mit Colab-Installations- und Startanleitung ergänzt.
 - 2025-08-11: AGENTS_Pruefung.md mit Prüfroutine hinzugefügt.
+- 2025-08-13: Solver setzt Seed- und Thread-Parameter.
