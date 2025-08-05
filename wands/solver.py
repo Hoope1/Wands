@@ -58,7 +58,7 @@ def _build_model(
     room_defs: Sequence[RoomDef],
     params: SolveParams,
     door_cuts: Sequence[Sequence[tuple[int, int]]],
-    island_cuts: Sequence[Sequence[tuple[int, int]]],
+    connect_cuts: Sequence[Sequence[tuple[int, int]]],
 ) -> tuple[
     cp_model.CpModel,
     list[
@@ -163,8 +163,8 @@ def _build_model(
     # Apply accumulated cuts
     for cut in door_cuts:
         model.add(sum(corr_cell[i][j] for (i, j) in cut) >= 1)
-    for comp in island_cuts:
-        model.add(sum(corr_cell[i][j] for (i, j) in comp) <= len(comp) - 1)
+    for path in connect_cuts:
+        model.add(sum(corr_cell[i][j] for (i, j) in path) >= len(path))
 
     # Objective: maximise number of room cells
     model.maximize(sum(room_cell[i][j] for i in range(gw) for j in range(gh)))
@@ -302,6 +302,25 @@ def _corridor_components(
     return components
 
 
+def _connect_path(
+    component: Sequence[tuple[int, int]],
+    params: SolveParams,
+) -> list[tuple[int, int]]:
+    """Return a simple L-shaped path from ``component`` to the entrance."""
+    x1, _, y1, _ = params.entrance_bounds()
+    sx, sy = component[0]
+    tx, ty = x1, y1
+    path: list[tuple[int, int]] = [(sx, sy)]
+    x, y = sx, sy
+    while x != tx:
+        x += 1 if tx > x else -1
+        path.append((x, y))
+    while y != ty:
+        y += 1 if ty > y else -1
+        path.append((x, y))
+    return path
+
+
 def solve(
     room_defs: list[RoomDef],
     params: SolveParams,
@@ -315,7 +334,7 @@ def solve(
     periodic persistence.
     """
     door_cuts: list[list[tuple[int, int]]] = []
-    island_cuts: list[list[tuple[int, int]]] = []
+    connect_cuts: list[list[tuple[int, int]]] = []
 
     max_rounds = getattr(params, "max_cut_rounds", getattr(params, "max_iters", 10))
 
@@ -323,7 +342,7 @@ def solve(
     try:
         for _ in range(max_rounds):
             model, room_vars, room_cell, corr_cell = _build_model(
-                room_defs, params, door_cuts, island_cuts
+                room_defs, params, door_cuts, connect_cuts
             )
             solver = cp_model.CpSolver()
             if params.seed is not None:
@@ -383,7 +402,8 @@ def solve(
                 return last_solution
             door_cuts.extend(new_door_cuts)
             if components:
-                island_cuts.append(components[0])
+                path = _connect_path(components[0], params)
+                connect_cuts.append(path)
     except KeyboardInterrupt:
         raise SolveInterrupted(last_solution)
 
