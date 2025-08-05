@@ -3,6 +3,7 @@ protobuf==5.29.5
 ortools==9.12.4544
 pillow==11.3.0
 pyyaml==6.0.2
+tomli==2.0.1
 
 # Test & Code-Qualität
 pytest==8.4.1

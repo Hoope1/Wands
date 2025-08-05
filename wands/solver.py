@@ -51,7 +51,10 @@ def _get_mem_mb() -> float | None:
     """Return current RSS memory in MB or ``None`` if unavailable."""
     if resource is None:
         return None
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    try:
+        return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
+    except Exception:  # pragma: no cover - defensive
+        return None
 
 
 def _build_model(

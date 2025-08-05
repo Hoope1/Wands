@@ -1,8 +1,13 @@
 [project]
 name = "wands"
-version = "0.0.0"
+version = "0.1.0"
 requires-python = ">=3.10"
-dependencies = ["ortools>=9.14", "pillow>=11.3"]
+dependencies = [
+    "ortools>=9.12",
+    "pillow>=10.0",
+    "pyyaml>=6.0",
+    "tomli>=2.0; python_version < '3.11'",
+]
 
 [tool.ruff]
 line-length = 88
