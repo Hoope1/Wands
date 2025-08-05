@@ -81,6 +81,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 31. Speicherlogging ohne `resource` ermöglichen – ✔ erledigt
 32. CP-SAT-Solver setzt Seed- und Threads-Parameter – ✔ erledigt
 33. Solver verbindet Korridorinseln über Pfad-Cut – ✔ erledigt
+34. Türheuristik mit Scoring für Türpositionen verbessern – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -120,6 +121,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Speicherlogging ohne resource ermöglichen | ✔     | 2025-08-12T00:00:00Z   | Agent          |
 | Solver nutzt Seed- und Thread-Parameter | ✔     | 2025-08-13T00:00:00Z   | Agent          |
 | Korridorinseln über Pfad-Cut verbinden | ✔     | 2025-08-14T00:00:00Z   | Agent          |
+| Türheuristik mit Scoring für Türpositionen verbessern | ✔     | 2025-08-15T00:00:00Z   | Agent          |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -146,3 +148,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-12T00:00:00Z – Datenklassen in model.py vervollständigt und Speicherlogging ohne resource implementiert
 - 2025-08-13T00:00:00Z – Solver setzt Seed- und Thread-Parameter
 - 2025-08-14T00:00:00Z – Solver verbindet Korridorinseln über Pfad-Cut
+- 2025-08-15T00:00:00Z – Türheuristik priorisiert breite Korridore bei Türwahl

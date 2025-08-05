@@ -524,3 +524,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-11: Codeformatierung und Lintingfehler bereinigt.
 * 2025-08-13: CP-SAT-Solver setzt Seed- und Thread-Parameter.
 * 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
+* 2025-08-15: Türheuristik wählt anhand von Scoring bessere Türpositionen.
