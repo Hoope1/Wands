@@ -2,6 +2,7 @@
 
 from wands import solver
 from wands.model import SolveParams
+from wands.progress import Progress
 
 
 def test_allowed_values() -> None:
@@ -26,4 +27,28 @@ def test_solve_basic() -> None:
         max_iters=2,
     )
     result = solver.solve([], params)
+    assert result["rooms"] == []
+
+
+def test_get_mem_mb_without_resource(monkeypatch) -> None:
+    """Memory helper should handle missing ``resource`` module."""
+    monkeypatch.setattr(solver, "resource", None)
+    assert solver._get_mem_mb() is None
+
+
+def test_solve_without_resource(monkeypatch) -> None:
+    """Solver should work even if ``resource`` is unavailable."""
+    params = SolveParams(
+        grid_w=6,
+        grid_h=6,
+        entrance_x=0,
+        entrance_w=1,
+        entrance_y=0,
+        entrance_h=1,
+        corridor_win=1,
+        max_iters=2,
+    )
+    monkeypatch.setattr(solver, "resource", None)
+    progress = Progress(interval=0)
+    result = solver.solve([], params, progress=progress)
     assert result["rooms"] == []

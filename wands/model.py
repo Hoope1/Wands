@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 __all__ = [
     "Door",
@@ -14,7 +14,7 @@ __all__ = [
 ]
 
 
-@dataclass
+@dataclass(slots=True)
 class Door:
     """Door on a room wall leading into the corridor."""
 
@@ -23,7 +23,7 @@ class Door:
     pos_y: int
 
 
-@dataclass
+@dataclass(slots=True)
 class RoomPlacement:
     """A concrete placement of a room in the grid."""
 
@@ -33,10 +33,10 @@ class RoomPlacement:
     y: int
     w: int
     h: int
-    doors: List[Door] = field(default_factory=list)
+    doors: list[Door] = field(default_factory=list)
 
 
-@dataclass
+@dataclass(slots=True)
 class Entrance:
     """Fixed entrance block."""
 
@@ -46,7 +46,7 @@ class Entrance:
     y2: int = 50
 
 
-@dataclass
+@dataclass(slots=True)
 class RoomDef:
     """Definition of a room type to be placed."""
 
@@ -60,10 +60,10 @@ class RoomDef:
     step_h: int
     priority: int
     efficiency_factor: float
-    duplicate_id: Optional[str] = None
+    duplicate_id: str | None = None
 
 
-@dataclass
+@dataclass(slots=True)
 class SolveParams:
     """Solver parameters and fixed problem constants."""
 
