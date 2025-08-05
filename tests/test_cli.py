@@ -94,6 +94,7 @@ def test_cli_version() -> None:
     assert result.returncode == 0
     assert __version__ in result.stdout
 
+
 def test_start_process_version() -> None:
     """start_process.py should expose the package version."""
     result = subprocess.run(

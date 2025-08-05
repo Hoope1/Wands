@@ -1,4 +1,5 @@
 """Validator for computed room layouts."""
+
 from __future__ import annotations
 
 from collections import deque
@@ -84,9 +85,7 @@ def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
                 continue
             anchors = windows_covering_cell(i, j, GRID_W, GRID_H, WIN)
             for a, b in anchors:
-                if all(
-                    grid[yy][xx] == 0 for xx, yy in iter_window_cells(a, b, WIN)
-                ):
+                if all(grid[yy][xx] == 0 for xx, yy in iter_window_cells(a, b, WIN)):
                     break
             else:
                 return False, f"Engstelle bei ({i},{j})"
@@ -98,9 +97,7 @@ def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
     return True, "Breite ≥4 überall"
 
 
-def _bfs(
-    start: Tuple[int, int], grid: List[List[int]]
-) -> Set[Tuple[int, int]]:
+def _bfs(start: Tuple[int, int], grid: List[List[int]]) -> Set[Tuple[int, int]]:
     """Breadth first search over corridor cells."""
     if not (0 <= start[0] < GRID_W and 0 <= start[1] < GRID_H):
         return set()
@@ -120,13 +117,14 @@ def _bfs(
     return seen
 
 
-def _door_adjacent(
-    room: Dict, door: Dict
-) -> Tuple[bool, Tuple[int, int] | None]:
+def _door_adjacent(room: Dict, door: Dict) -> Tuple[bool, Tuple[int, int] | None]:
     x, y, w, h = room["x"], room["y"], room["w"], room["h"]
     side = door.get("side")
-    px = door.get("pos_x")
-    py = door.get("pos_y")
+    px_any = door.get("pos_x")
+    py_any = door.get("pos_y")
+    if not isinstance(px_any, int) or not isinstance(py_any, int):
+        return False, None
+    px, py = px_any, py_any
     if side == "left":
         if px != x or not (y < py < y + h - 1):
             return False, None
@@ -169,26 +167,18 @@ def _check_doors(
                 errors.append(f"Tür von Raum {room.get('id')} außerhalb")
                 continue
             if grid[ay][ax] != 0:
-                errors.append(
-                    f"Tür von Raum {room.get('id')} führt nicht in Gang"
-                )
+                errors.append(f"Tür von Raum {room.get('id')} führt nicht in Gang")
                 continue
             if _corridor_line_width(grid, ax, ay) < WIN:
-                errors.append(
-                    f"Tür von Raum {room.get('id')} führt in Engstelle"
-                )
+                errors.append(f"Tür von Raum {room.get('id')} führt in Engstelle")
                 continue
             if require_no_outside_doors and (
                 ax in {0, GRID_W - 1} or ay in {0, GRID_H - 1}
             ):
-                errors.append(
-                    f"Tür von Raum {room.get('id')} am Außenrand"
-                )
+                errors.append(f"Tür von Raum {room.get('id')} am Außenrand")
                 continue
             if (ax, ay) not in reachable:
-                errors.append(
-                    f"Tür von Raum {room.get('id')} nicht erreichbar"
-                )
+                errors.append(f"Tür von Raum {room.get('id')} nicht erreichbar")
                 continue
             valid = True
         if not valid:
@@ -205,22 +195,13 @@ def validate(
     grid, flags = build_grid(solution)
 
     corridor_cells = [
-        (i, j)
-        for j in range(GRID_H)
-        for i in range(GRID_W)
-        if grid[j][i] == 0
+        (i, j) for j in range(GRID_H) for i in range(GRID_W) if grid[j][i] == 0
     ]
     room_cells = [
-        (i, j)
-        for j in range(GRID_H)
-        for i in range(GRID_W)
-        if grid[j][i] > 0
+        (i, j) for j in range(GRID_H) for i in range(GRID_W) if grid[j][i] > 0
     ]
     unknown_cells = [
-        (i, j)
-        for j in range(GRID_H)
-        for i in range(GRID_W)
-        if grid[j][i] < 0
+        (i, j) for j in range(GRID_H) for i in range(GRID_W) if grid[j][i] < 0
     ]
 
     complement_pass = not unknown_cells and flags["bounds"]
@@ -231,11 +212,7 @@ def validate(
         },
         "entrance_area": {
             "pass": flags["entrance_area"],
-            "info": (
-                "Eingang frei"
-                if flags["entrance_area"]
-                else "Eingang blockiert"
-            ),
+            "info": ("Eingang frei" if flags["entrance_area"] else "Eingang blockiert"),
         },
         "no_overlap": {
             "pass": flags["no_overlap"] and flags["bounds"],

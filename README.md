@@ -6,6 +6,7 @@ grundstueck_77x50_eingang_4x10.png ist im Hauptverzeichnis, so sieht das Grundst
 
 ---
 Vor diesen punkten immer README-SPEC.md und AGENT_AUFTRAG.md lesen!
+Bitte nach jeder Änderung die Prüfroutine in `AGENTS_Pruefung.md` vollständig ausführen und bei Fehlern wiederholen.
 
 Der komplette Prozess lässt sich mit Standardpfaden über das Skript
 ``start_process.py`` starten:

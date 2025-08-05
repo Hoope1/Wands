@@ -1,6 +1,8 @@
 # Prozessdokumentation
 
 ## Einleitung
+Hinweis: Die Prüfroutine in `AGENTS_Pruefung.md` ist nach jeder Änderung vollständig auszuführen und bei Fehlern zu wiederholen.
+
 Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster eine optimale Raumverteilung berechnet, bei der die Raumfläche maximiert wird und alle formalen Bedingungen wie Gangbreite ≥4, Konnektivität, Türen und fester Eingang erfüllt sind (Quelle: README.md#10-20).
 
 ## Ablauf in 10 Schritten
@@ -74,6 +76,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 26. Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem ergänzen – ✔ erledigt
 27. `requirements.txt` mit Abhängigkeiten erstellen (Quelle: Benutzeranweisung) – ✔ erledigt
 28. Anleitung für Nutzung in Google Colab (GUIDE.md) erstellen – ✔ erledigt
+29. Prüfroutine `AGENTS_Pruefung.md` hinzufügen – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -107,6 +110,7 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Validator um diagonale Engstellen/Türengpässe erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
 | Fortschrittsdaten mit Bound/Gap/Vars/Constraints/Mem erweitern | ✔     | 2025-08-08T00:00:00Z   | Agent          |
 | `requirements.txt` für Abhängigkeiten erstellen | ✔     | 2025-08-10T02:00:00Z   | Agent          |
+| Prüfroutine `AGENTS_Pruefung.md` hinzufügen | ✔     | 2025-08-11T01:00:00Z   | Agent          |
 | Dokumentation für Google-Colab-Nutzung schreiben | ✔     | 2025-08-10T02:00:00Z   | Agent          |
 
 ## Change-Log
@@ -128,3 +132,5 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-09T00:00:00Z – requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt
 - 2025-08-10T00:00:00Z – GUIDE.md mit Colab-Installationsanleitung ergänzt
 - 2025-08-10T02:00:00Z – requirements auf Colab-Version abgestimmt und GUIDE aktualisiert
+- 2025-08-11T00:00:00Z – Prüfroutine AGENTS_Pruefung.md hinzugefügt
+- 2025-08-11T01:00:00Z – Prüfroutine in AGENTS_Pruefung.md vervollständigt

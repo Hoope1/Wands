@@ -12,16 +12,26 @@ def test_progress_event_creation():
     assert event.phase == "solve"
     assert event.vars == 10
 
+
 def test_progress_text_and_interval():
     """Heartbeat respects interval and emits final event."""
     buf = io.StringIO()
     prog = Progress(stream=buf, fmt="text", interval=1)
-    prog.heartbeat("solve", objective_best=1.0, objective_bound=2.0, gap=0.5, vars=1, constraints=2, mem_mb=3.0)
+    prog.heartbeat(
+        "solve",
+        objective_best=1.0,
+        objective_bound=2.0,
+        gap=0.5,
+        vars=1,
+        constraints=2,
+        mem_mb=3.0,
+    )
     first = buf.getvalue()
     prog.heartbeat("solve", objective_best=2.0)
     assert buf.getvalue() == first
     prog.done("finish")
     assert "finish" in buf.getvalue().splitlines()[-1]
+
 
 def test_progress_json_output():
     """JSON format produces serializable output."""

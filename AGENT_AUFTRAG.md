@@ -1,5 +1,7 @@
 Hier ist der **vollständige Arbeitsauftrag** (neutral, methodenoffen, Python-Pflicht) – **ohne** irgendeine Implementierungsrichtung vorzugeben, aber mit **allen** Daten/Parametern, die für eine unabhängige Neuumsetzung nötig sind.
 
+Hinweis: Nach jeder Änderung ist die Prüfroutine in `AGENTS_Pruefung.md` vollständig auszuführen und bei Fehlern zu wiederholen.
+
 > **Referenzbild (Pflichtbeilage):**
 > `grundstueck_77x50_eingang_4x10.png` – zeigt das 77×50-Gitternetz und den fixen Eingang als 4×10-Fläche oben (x=56..59, y=40..49).
 > Bitte das Bild in der Doku/README einbinden und zur visuellen Verifikation verwenden.

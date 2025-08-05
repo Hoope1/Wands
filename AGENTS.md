@@ -8,6 +8,7 @@ Diese Vorgaben gelten für das gesamte Repository.
 - Vor jeder Änderung alle README*/AGENTS*-Dateien prüfen und Prozess.md aktualisieren.
 - Aufgabenliste mit ✔/✖ pflegen, Status-Tabelle und Change-Log bei jeder Aktualisierung anpassen.
 - Externe Tools lesen Parameterreferenz und Aufgabenliste zur Steuerung von Linting, Tests und Deployment.
+- Die Prüfroutine in `AGENTS_Pruefung.md` ist nach jedem Abschluss vollständig auszuführen; Fehler sind zu beheben und die Prüfung zu wiederholen, bis keine Fehler mehr auftreten.
 
 ## Backup-Agenten
 | Disziplin            | Primärtool | Backup-Tool | Wechselkriterium                         |
@@ -53,3 +54,4 @@ Keine
 - 2025-08-08: Validator um diagonale Engstellen/Türengpässe erweitert, Fortschrittsdaten aus Solver ergänzt.
 - 2025-08-09: requirements.txt mit Laufzeit- und Prüf-Abhängigkeiten ergänzt.
 - 2025-08-10: GUIDE.md mit Colab-Installations- und Startanleitung ergänzt.
+- 2025-08-11: AGENTS_Pruefung.md mit Prüfroutine hinzugefügt.
