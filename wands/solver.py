@@ -11,9 +11,12 @@ maximum number of cut rounds is reached.
 
 from __future__ import annotations
 
-import resource
+try:
+    import resource  # type: ignore
+except ModuleNotFoundError:  # pragma: no cover - windows fallback
+    resource = None  # type: ignore[assignment]
 from collections import deque
-from typing import Callable, List, Sequence, cast
+from typing import Callable, Sequence, cast
 
 from ortools.sat.python import cp_model
 
@@ -42,6 +45,13 @@ def allowed_values(min_v: int, step: int, max_v: int) -> cp_model.Domain:
         raise ValueError("max_v must be >= min_v")
     values = list(range(min_v, max_v + 1, step))
     return cp_model.Domain.from_values(values)
+
+
+def _get_mem_mb() -> float | None:
+    """Return current RSS memory in MB or ``None`` if unavailable."""
+    if resource is None:
+        return None
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
 
 
 def _build_model(
@@ -293,7 +303,7 @@ def _corridor_components(
 
 
 def solve(
-    room_defs: List[RoomDef],
+    room_defs: list[RoomDef],
     params: SolveParams,
     progress: Progress | None = None,
     checkpoint_cb: Callable[[dict], None] | None = None,
@@ -351,7 +361,6 @@ def solve(
                 gap = None
                 if bound:
                     gap = (bound - area_total) / bound
-                mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024
                 progress.heartbeat(
                     "solve",
                     objective_best=area_total,
@@ -359,7 +368,7 @@ def solve(
                     gap=gap,
                     vars=len(model.Proto().variables),
                     constraints=len(model.Proto().constraints),
-                    mem_mb=mem,
+                    mem_mb=_get_mem_mb(),
                 )
             if checkpoint_cb:
                 checkpoint_cb(last_solution)
