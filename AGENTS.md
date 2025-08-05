@@ -59,3 +59,4 @@ Keine
 - 2025-08-14: Solver verbindet Korridorinseln über Pfad-Cut.
 - 2025-08-16: Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt.
 - 2025-08-17: Datenmodell und CLI auf fixes 77×50-Raster reduziert, Lösung schreibt Grid-Konstanten.
+- 2025-08-18: Tooling-Abhängigkeiten docformatter, pydocstyle und types-PyYAML ergänzt.
