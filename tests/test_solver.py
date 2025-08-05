@@ -104,3 +104,23 @@ def test_isolated_corridor_gets_connected() -> None:
     cp.solve(model)
     for i, j in path:
         assert cp.value(corr_cell[i][j]) == 1
+
+
+def test_door_heuristic_prefers_better_position() -> None:
+    """Door selection should prefer positions with more corridor space."""
+    room = {
+        "id": "r1",
+        "type": "r",
+        "x": 1,
+        "y": 1,
+        "w": 3,
+        "h": 4,
+        "doors": [],
+    }
+    corr_grid = [[0 for _ in range(5)] for _ in range(5)]
+    corr_grid[0][2] = 1
+    corr_grid[0][3] = 1
+    corr_grid[0][4] = 1
+    ok, _ = solver._ensure_doors([room], corr_grid)
+    assert ok
+    assert room["doors"] == [{"side": "left", "pos_x": 1, "pos_y": 3}]

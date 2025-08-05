@@ -254,10 +254,31 @@ def _ensure_doors(
     """Assign doors to rooms if possible and return (ok, cuts)."""
     cuts: list[list[tuple[int, int]]] = []
     all_ok = True
+    gw = len(corr_grid)
+    gh = len(corr_grid[0]) if gw else 0
     for room in rooms:
         doors, cut_pos = _door_candidates(room, corr_grid)
         if doors:
-            side, dx, dy = doors[0]
+            x, y, w, h = room["x"], room["y"], room["w"], room["h"]
+
+            def score(candidate: tuple[str, int, int]) -> tuple[int, int]:
+                side, dx, dy = candidate
+                if side == "left":
+                    px, py = x - 1, dy
+                    dist = min(dy - y, y + h - 1 - dy)
+                elif side == "right":
+                    px, py = x + w, dy
+                    dist = min(dy - y, y + h - 1 - dy)
+                elif side == "bottom":
+                    px, py = dx, y - 1
+                    dist = min(dx - x, x + w - 1 - dx)
+                else:  # top
+                    px, py = dx, y + h
+                    dist = min(dx - x, x + w - 1 - dx)
+                neigh = sum(corr_grid[nx][ny] for nx, ny in neighbors4(px, py, gw, gh))
+                return neigh, dist
+
+            side, dx, dy = max(doors, key=score)
             room["doors"].append({"side": side, "pos_x": dx, "pos_y": dy})
         else:
             all_ok = False
