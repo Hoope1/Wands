@@ -84,6 +84,47 @@ def test_cli_validate_only(tmp_path: Path) -> None:
     assert report2.exists(), "validation report not created"
 
 
+def test_cli_strict_exit_code(tmp_path: Path) -> None:
+    """--strict returns exit code 1 bei Validierungsfehlern."""
+    bad_solution = {
+        "rooms": [
+            {
+                "id": "r",
+                "type": "R",
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1,
+                "doors": [],
+            }
+        ],
+        "entrance": {"x1": 56, "x2": 60, "y1": 40, "y2": 50},
+    }
+    sol = tmp_path / "bad.json"
+    sol.write_text(json.dumps(bad_solution), encoding="utf8")
+    report = tmp_path / "report.json"
+    cmd = [
+        sys.executable,
+        "-m",
+        "wands",
+        "--config",
+        str(sol),
+        "--out-json",
+        str(tmp_path / "out.json"),
+        "--out-png",
+        str(tmp_path / "out.png"),
+        "--validate",
+        str(report),
+        "--progress",
+        "off",
+        "--validate-only",
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    assert result.returncode == 0
+    result2 = subprocess.run(cmd + ["--strict"], capture_output=True, text=True)
+    assert result2.returncode == 1
+
+
 def test_cli_version() -> None:
     """The module reports its version string."""
     result = subprocess.run(

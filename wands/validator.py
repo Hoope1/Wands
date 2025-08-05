@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import Dict, List, Set, Tuple
+from typing import Dict, Iterable, List, Set, Tuple
 
 from .utils import iter_window_cells, neighbors4, windows_covering_cell
 
@@ -97,15 +97,16 @@ def _check_corridor_width(grid: List[List[int]]) -> Tuple[bool, str]:
     return True, "Breite ≥4 überall"
 
 
-def _bfs(start: Tuple[int, int], grid: List[List[int]]) -> Set[Tuple[int, int]]:
-    """Breadth first search over corridor cells."""
-    if not (0 <= start[0] < GRID_W and 0 <= start[1] < GRID_H):
-        return set()
-    if grid[start[1]][start[0]] != 0:
-        return set()
-
-    q: deque[Tuple[int, int]] = deque([start])
+def _bfs(
+    starts: Iterable[Tuple[int, int]], grid: List[List[int]]
+) -> Set[Tuple[int, int]]:
+    """Breadth first search over corridor cells from multiple starts."""
+    q: deque[Tuple[int, int]] = deque()
     seen: Set[Tuple[int, int]] = set()
+    for s in starts:
+        x, y = s
+        if 0 <= x < GRID_W and 0 <= y < GRID_H and grid[y][x] == 0:
+            q.append((x, y))
     while q:
         i, j = q.popleft()
         if (i, j) in seen:
@@ -236,8 +237,10 @@ def validate(
     report["corridor_width"] = {"pass": width_ok, "info": width_info}
 
     ent = solution.get("entrance", {"x1": 56, "x2": 60, "y1": 40, "y2": 50})
-    start = (ent["x1"], ent["y1"])
-    reachable = _bfs(start, grid)
+    starts = [
+        (i, j) for i in range(ent["x1"], ent["x2"]) for j in range(ent["y1"], ent["y2"])
+    ]
+    reachable = _bfs(starts, grid)
     corr_set = set(corridor_cells)
     conn_pass = corr_set == reachable
     report["corridor_connectivity"] = {

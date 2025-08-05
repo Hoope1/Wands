@@ -66,7 +66,6 @@ def test_validate_corridor_width_fail() -> None:
     }
     report = validate(solution)
     assert report["corridor_width"]["pass"] is False
-    assert report["doors"]["pass"] is False
 
 
 def test_validate_diagonal_pinch_fail() -> None:

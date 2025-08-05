@@ -55,6 +55,11 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--progress-interval", type=float, default=1.0)
     parser.add_argument("--checkpoint", type=float, default=0.0)
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Beende mit Exit-Code 1 bei Validierungsfehlern.",
+    )
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument(
         "--allow-outside-doors",
@@ -104,7 +109,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         logger.info("phase=finish")
         if args.log_file:
             log_stream.close()
-        return 0
+        exit_code = 0
+        if args.strict and not all(v["pass"] for v in report.values()):
+            exit_code = 1
+        return exit_code
 
     room_defs = load_room_defs(args.config)
     if prog:
@@ -180,7 +188,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     logger.info("phase=%s", phase)
     if args.log_file:
         log_stream.close()
-    return 0
+    exit_code = 0
+    if args.strict and not all(v["pass"] for v in report.values()):
+        exit_code = 1
+    return exit_code
 
 
 if TYPE_CHECKING:  # pragma: no cover - for vulture

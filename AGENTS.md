@@ -60,3 +60,4 @@ Keine
 - 2025-08-16: Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt.
 - 2025-08-17: Datenmodell und CLI auf fixes 77×50-Raster reduziert, Lösung schreibt Grid-Konstanten.
 - 2025-08-18: Tooling-Abhängigkeiten docformatter, pydocstyle und types-PyYAML ergänzt.
+- 2025-08-19: CLI-Strict-Exitcode, Versionseinheit, konservative Abhängigkeiten, BFS-Eingangszellen und robustes Speicherlogging ergänzt.

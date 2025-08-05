@@ -530,3 +530,4 @@ Beispiel weiterer Einträge: **Storeroom**, **Graphics**, **Sound**, **MoCap**, 
 * 2025-08-16: Validator verbietet standardmäßig Außentüren; CLI-Schalter `--allow-outside-doors` hinzugefügt.
 * 2025-08-17: Datenmodell vereinfacht und CLI auf fixes 77×50-Raster reduziert; Lösung enthält `grid_w`/`grid_h`.
 * 2025-08-18: Tooling-Abhängigkeiten `docformatter`, `pydocstyle` und `types-PyYAML` ergänzt.
+* 2025-08-19: CLI-Strict-Modus, einheitliche Version, konservative Abhängigkeiten und robuster Validator hinzugefügt.

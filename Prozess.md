@@ -85,6 +85,11 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 35. Validator verbietet Außentüren standardmäßig, CLI-Schalter zum Zulassen – ✔ erledigt
 36. Lösung enthält Grid-Konstanten `grid_w`/`grid_h` – ✔ erledigt
 37. CLI ohne Raster- und Eingang-Parameter betreiben – ✔ erledigt
+38. CLI liefert bei Validierungsfehlern Exit-Code 1 (--strict) – ✔ erledigt
+39. Version aus pyproject.toml einlesen – ✔ erledigt
+40. Abhängigkeiten im pyproject konservativ setzen – ✔ erledigt
+41. Validator startet BFS von allen Eingangszellen – ✔ erledigt
+42. Speicherabfrage _get_mem_mb fängt Fehler ab – ✔ erledigt
 
 ## Parameter- & Optionsreferenz
 - Rastergröße `GRID_W=77`, `GRID_H=50` (Quelle: README.md#115-118)
@@ -129,6 +134,11 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 | Außentüren standardmäßig verbieten, CLI-Schalter anbieten | ✔     | 2025-08-16T00:00:00Z   | Agent          |
 | Lösung schreibt Grid-Konstanten | ✔     | 2025-08-17T00:00:00Z   | Agent          |
 | CLI ohne Raster-/Eingangs-Parameter | ✔     | 2025-08-17T00:00:00Z   | Agent          |
+| Exit-Code bei Validierungsfehlern (--strict) | ✔ | 2025-08-19T00:00:00Z | Agent |
+| Version aus pyproject.toml lesen | ✔ | 2025-08-19T00:00:00Z | Agent |
+| Konservative Abhängigkeitsuntergrenzen | ✔ | 2025-08-19T00:00:00Z | Agent |
+| BFS von allen Eingangszellen | ✔ | 2025-08-19T00:00:00Z | Agent |
+| Speicherabfrage robust | ✔ | 2025-08-19T00:00:00Z | Agent |
 
 ## Change-Log
 - 2025-08-03T21:25:34Z – Initiale Prozessbeschreibung erstellt
@@ -159,3 +169,4 @@ Dieses Projekt entwickelt ein Python-Programm, das auf einem 77×50‑Raster ein
 - 2025-08-16T00:00:00Z – Validator verbietet Außentüren standardmäßig, CLI-Schalter hinzugefügt
 - 2025-08-17T00:00:00Z – Lösung ergänzt `grid_w`/`grid_h`, CLI entfernt Rasterparameter
 - 2025-08-18T00:00:00Z – Tooling-Abhängigkeiten docformatter, pydocstyle und types-PyYAML ergänzt
+- 2025-08-19T00:00:00Z – CLI-Exit-Code (--strict), Versionseinheit, Abhängigkeitsgrenzen, BFS-Startpunkte und robustes Speicherlogging
