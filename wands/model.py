@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 __all__ = [
     "Door",
@@ -18,7 +18,7 @@ __all__ = [
 class Door:
     """Door on a room wall leading into the corridor."""
 
-    side: str
+    side: Literal["left", "right", "top", "bottom"]
     pos_x: int
     pos_y: int
 
@@ -60,7 +60,7 @@ class RoomDef:
     step_h: int
     priority: int
     efficiency_factor: float
-    duplicate_id: str | None = None
+    duplicate_id: int | None = None
 
 
 @dataclass(slots=True)
@@ -69,24 +69,16 @@ class SolveParams:
 
     grid_w: int = 77
     grid_h: int = 50
-    entrance_x: int = 56
-    entrance_w: int = 4
-    entrance_y: int = 40
-    entrance_h: int = 10
+    entrance: Entrance = field(default_factory=Entrance)
     corridor_win: int = 4
-    max_iters: int = 1000
-    max_cut_rounds: int = 10
-    time_limit: int | None = None
+    max_iters: int = 10
+    time_limit: float | None = None
     seed: int | None = None
     threads: int | None = None
 
     def entrance_bounds(self) -> tuple[int, int, int, int]:
         """Return entrance bounds as ``(x1, x2, y1, y2)``."""
-        x1 = self.entrance_x
-        x2 = self.entrance_x + self.entrance_w
-        y1 = self.entrance_y
-        y2 = self.entrance_y + self.entrance_h
-        return x1, x2, y1, y2
+        return self.entrance.x1, self.entrance.x2, self.entrance.y1, self.entrance.y2
 
 
 if TYPE_CHECKING:  # pragma: no cover - for vulture

@@ -40,16 +40,10 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out-json", required=True)
     parser.add_argument("--out-png", required=True)
     parser.add_argument("--validate", required=True, dest="report")
-    parser.add_argument("--grid-w", type=int, default=77)
-    parser.add_argument("--grid-h", type=int, default=50)
-    parser.add_argument("--entr-x1", type=int, default=56)
-    parser.add_argument("--entr-w", type=int, default=4)
-    parser.add_argument("--entr-y1", type=int, default=40)
-    parser.add_argument("--entr-len", type=int, default=10)
     parser.add_argument("--threads", type=int, default=1)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--time-limit", type=float, default=1.0)
-    parser.add_argument("--max-cut-rounds", type=int, default=10)
+    parser.add_argument("--max-iters", type=int, default=10)
     parser.add_argument("--log-level", default="INFO")
     parser.add_argument("--log-format", choices=["text", "json"], default="text")
     parser.add_argument("--log-file")
@@ -117,15 +111,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         prog.heartbeat("parse")
     logger.info("phase=parse")
 
-    params = SolveParams(
-        grid_w=args.grid_w,
-        grid_h=args.grid_h,
-        entrance_x=args.entr_x1,
-        entrance_w=args.entr_w,
-        entrance_y=args.entr_y1,
-        entrance_h=args.entr_len,
-    )
-    params.max_cut_rounds = args.max_cut_rounds
+    params = SolveParams()
+    params.max_iters = args.max_iters
     params.time_limit = args.time_limit
     params.seed = args.seed
     params.threads = args.threads
@@ -157,12 +144,14 @@ def main(argv: Optional[List[str]] = None) -> int:
         if isinstance(exc, SolveInterrupted):
             interrupted = True
             solution = exc.solution or {
+                "grid_w": params.grid_w,
+                "grid_h": params.grid_h,
                 "rooms": [],
                 "entrance": {
-                    "x1": params.entrance_x,
-                    "x2": params.entrance_x + params.entrance_w,
-                    "y1": params.entrance_y,
-                    "y2": params.entrance_y + params.entrance_h,
+                    "x1": params.entrance.x1,
+                    "x2": params.entrance.x2,
+                    "y1": params.entrance.y1,
+                    "y2": params.entrance.y2,
                 },
                 "objective": {"room_area_total": 0},
             }
