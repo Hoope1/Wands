@@ -1,7 +1,7 @@
 """Tests for the CP-SAT solver."""
 
 from wands import solver
-from wands.model import SolveParams
+from wands.model import RoomDef, SolveParams
 from wands.progress import Progress
 
 
@@ -80,3 +80,27 @@ def test_solver_sets_seed_and_threads(monkeypatch) -> None:
     solver.solve([], params)
     assert recorded["seed"] == 123
     assert recorded["threads"] == 2
+
+
+def test_isolated_corridor_gets_connected() -> None:
+    """An isolated corridor component should be connected via a path cut."""
+    params = SolveParams(
+        grid_w=4,
+        grid_h=4,
+        entrance_x=0,
+        entrance_w=1,
+        entrance_y=0,
+        entrance_h=1,
+        corridor_win=1,
+        max_iters=1,
+    )
+    room = RoomDef("r", "g", 1, 1, 1, 1, 1, 1, 1, 1.0)
+    component = [(3, 3)]
+    path = solver._connect_path(component, params)
+    model, room_vars, room_cell, corr_cell = solver._build_model(
+        [room], params, [], [path]
+    )
+    cp = solver.cp_model.CpSolver()
+    cp.solve(model)
+    for i, j in path:
+        assert cp.value(corr_cell[i][j]) == 1
