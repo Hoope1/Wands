@@ -1,21 +1,9 @@
-# Laufzeit (Repo "Wands")
-protobuf==5.29.5
-ortools==9.12.4544
-pillow==11.3.0
-pyyaml==6.0.2
-tomli==2.0.1
-
-# Test & Code-Qualität
-pytest==8.4.1
-ruff==0.12.7
-flake8==7.3.0
-isort==6.0.1
-pyright==1.1.403
-mypy==1.11.2
-vulture==2.14
-xenon==0.9.3
-radon==6.0.1
-pre-commit==4.2.0
-docformatter==1.7.7
-pydocstyle==6.3.0
-types-PyYAML==6.0.12.20250516
+pyyaml
+matplotlib
+ruff
+docformatter
+pydocstyle
+mypy
+vulture
+radon
+pytest
